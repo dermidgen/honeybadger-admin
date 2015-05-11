@@ -1,0 +1,152 @@
+{{#extend "dialog"}}
+	{{#content "title"}}Loader Editor{{/content}}
+	{{#content "id"}}loaderWizard{{/content}}
+
+	{{#content "dialog"}}
+
+      	<div class="navigator">
+      		<strong>Steps:</strong> 
+      		<ul class="steps">
+      			<li class="step bg-primary">Basic Setup</li>
+      			<li class="step">Loader Details</li>
+      			<li class="step">Test Loader</li>
+      		</ul>
+      	</div>
+      	<section id="ldr-step-1" class="step active">
+			<h4>Basic Setup</h4>
+			<div class="form-group">
+				<label for="loaderName">Loader Name</label>
+				<input type="text" class="form-control" placeholder="BHHS Normalizer" name="loaderName" id="loaderName"/>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label" for="ldr-source-select">Data Transformer</label> &nbsp;
+						<select id="ldr-source-select" class="form-control">
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label" for="ldr-target-type">Data Target</label> &nbsp;
+						<select class="form-control" name="ldr-target-type" id="ldr-target-type">
+							<option value="">-- Select data target --</option>
+							<option value="mysql">MySQL</option>
+							<option value="couchdb">CouchDB</option>
+							<option value="ftp">FTP</option>
+							<option value="filesystem">Filesystem</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div id="loaderDSN">
+				<div id="loaderMySQL">
+					<div class="form-group">
+						<label class="control-label" for="ldr-mysql-dsn">MySQL Credentials, Host and Port</label>
+						<input type="text" class="form-control" name="ldr-mysql-dsn" id="ldr-mysql-dsn" placeholder="mysql://user:pass@hostname:3306" />
+					</div>
+					<div class="form-group">
+						<button id="ldr-mysql-validate" tabindex="-1" type="button" class="btn btn-primary">
+							Validate Connection <span class="validation-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+				<div id="loaderCouchDB">
+					<div class="form-group">
+						<label class="control-label" for="ldr-couchdb-dsn">CouchDB Credentials, Host and Port</label>
+						<input type="text" class="form-control" name="ldr-couchdb-dsn" id="ldr-couchdb-dsn" placeholder="couchdb://user:pass@hostname:5984" />
+					</div>
+					<div class="form-group">
+						<button id="ldr-couchdb-validate" tabindex="-1" type="button" class="btn btn-primary">
+							Validate Connection <span class="validation-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+				<div id="loaderFTP">
+					<div class="form-group">
+						<label class="control-label" for="ldr-ftp-dsn">FTP Credentials, Host and Port</label>
+						<input type="text" class="form-control" name="ldr-ftp-dsn" id="ldr-ftp-dsn" placeholder="ftp://user:pass@hostname:21" />
+					</div>
+					<div class="form-group">
+						<button id="ldr-ftp-validate" tabindex="-1" type="button" class="btn btn-primary">
+							Validate Connection <span class="validation-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+				<div id="loaderFilesystem">
+					<div class="form-group">
+						<label class="control-label" for="ldr-ftp-basepath">Filesystem Base Path</label>
+						<input type="text" class="form-control" name="ldr-filesystem-basepath" id="ldr-filesystem-basepath" placeholder="/mnt/data/archive/" />
+					</div>
+					<div class="form-group">
+						<button id="ldr-filesystem-validate" tabindex="-1" type="button" class="btn btn-primary">
+							Validate Path <span class="validation-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+      	</section>
+      	<section id="ldr-step-2" class="step">
+			<h4>Loader Details</h4>
+			<div class="loader-options" id="loaderSchemas">
+				<div class="create well">
+					<p>This database does not appear to have any schemas that support your transformer's output.</p>
+					<p><center><button id="ldr-new-schema" class="btn btn-primary">Create Schema</button></center></p>
+				</div>
+				<div class="fields">
+					<p>Before creating a new schema on your target, we need to verify the data type for each field in your data source</p>
+					<div class="form-group">
+						<label class="control-label" for="ldr-target-schema">Schema Name</label>
+						<input type="text" class="form-control" placeholder="my_schema" id="ldr-target-schema" name="ldr-target-schema"/>
+					</div>
+					<div class="maps">
+					</div>
+					<div class="form-group">
+						<button id="ldr-create-schema" tabindex="-1" type="button" class="btn btn-primary">
+							Create Schema <span class="schema-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="loader-options" id="ldr-ftp-options">
+				<div class="form-group">
+					<label for="ldr-ftp-basepath">FTP Base Path</label>
+					<input type="text" class="form-control" placeholder="/data/" name="ldr-ftp-basepath" id="ldr-ftp-basepath"/>
+				</div>
+					<label for="ldr-ftp-filename">FTP Target File</label><br>
+				<div class="row">
+					<div class="col-xs-8">
+						<input type="text" class="form-control" placeholder="listings-%source.filename%-%date%.csv" name="ldr-ftp-filename" id="ldr-ftp-filename"/> 
+					</div>
+					<div class="col-xs-4">
+        				<button type="button" class="btn btn-primary" id="ldr-ftp-browse">Browse</button>
+        			</div>
+				</div>
+				<div><small>You can use variables to help name your file. </small><span am-Icon="glyph" class="question-sign"></span></div>
+				<div id="ldr-ftp-browser">
+					<ul class="files">
+					</ul>
+				</div>
+			</div>
+			<div class="loader-options" id="ldr-filesystem-options">
+				<div class="form-group">
+					<label for="ldr-filesystem-filename">Filesystem Output Filename</label>
+					<input type="text" class="form-control" placeholder="listings-%source.filename%-%date%.csv" name="ldr-filesystem-filename" id="ldr-filesystem-filename"/>
+				</div>
+				<small>You can use variables to help name your file. </small><span am-Icon="glyph" class="question-sign"></span>
+			</div>
+      	</section>
+      	<section id="ldr-step-3" class="step">
+			<h4>Test Loader</h4>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" id="ldr-test">Run Test</button>
+				<button type="button" class="btn btn-default" id="ldr-test-clear">Clear Log</button>
+			</div>
+			<h5>Loader Log:</h5>
+			<div class="well">
+				<div class="body logger" id="loader-log-body"></div>
+			</div>
+			<div id="loader-result" class="wizard-result"></div>
+      	</section>
+	{{/content}}
+{{/extend}}

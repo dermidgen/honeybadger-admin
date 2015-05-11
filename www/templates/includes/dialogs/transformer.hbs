@@ -1,0 +1,89 @@
+{{#extend "dialog"}}
+	{{#content "title"}}Transform Editor{{/content}}
+	{{#content "id"}}transformWizard{{/content}}
+
+	{{#content "dialog"}}
+	  	<div class="navigator">
+	  		<strong>Steps:</strong> 
+	  		<ul class="steps">
+	  			<li class="step bg-primary">Basic Setup</li>
+	  			<li class="step">Transformer Details</li>
+	  			<li class="step">Test Transformer</li>
+	  		</ul>
+	  	</div>
+	  	<section id="trn-step-1" class="step active">
+			<h4>Basic Setup</h4>
+			<div class="form-group">
+				<label for="transformerName">Transformer Name</label>
+				<input type="text" class="form-control" placeholder="BHHS Normalizer" name="transformerName" id="transformerName"/>
+			</div>
+			<div class="form-group">
+				<label for="transformerDescription">Transformer Description</label>
+				<textarea class="form-control" placeholder="BHHS Normalizer" name="transformerDescription" id="transformerDescription"></textarea>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label" for="trn-source-select">Transformer Input</label>
+						<select id="trn-source-toggle" class="form-control">
+							<option value="">-- Select an input definition --</option>
+							<option value="custom">Custom source definition</option>
+							<option value="extractor-template">Use extractor as a template</option>
+							<option value="extractor-bind">Bind to an extractor</option>
+						</select>
+						
+					</div>
+					<div class="form-group">
+						<label class="control-label">Select Extractor</label>
+						<select id="trn-source-select" class="form-control" disabled="disabled">
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<small>
+						<dl>
+							<dt>Custom source definition</dt>
+							<dd>Define your own fields and data types</dd>
+							<dt>Use extractor as a template</dt>
+							<dd>Start with the fields an extractor has found a go from there</dd>
+							<dt>Bind to an extractor <em>*experimental*</em></dt>
+							<dd>Always use the fields from this extractor - and adapt to changes</dd>
+						</dl>
+					</small>
+				</div>
+			</div>
+	  	</section>
+	  	<section id="trn-step-2" class="step data-structures">
+			<h4>Transformer Details</h4>
+			<div class="form-group">
+				<label class="control-label">Transform Type</label>
+				<select name="trn-transform-type" id="trn-transform-type" class="form-control">
+					<option value="">-- Select a transformation type --</option>
+					<option value="normalize">Normalize</option>
+					<option value="map">Custom Mapping</option>
+				</select>
+			</div>
+			<div id="transformNormalize">
+			</div>
+			<div id="transformMapper">
+				<div class="fields">
+				</div>
+				<div class="mapper form-group">
+					<textarea class="form-control" name="trn-map" id="trn-map" rows="10"></textarea>
+				</div>
+			</div>
+	  	</section>
+	  	<section id="trn-step-3" class="step">
+			<h4>Test Transformer</h4>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" id="trn-test">Run Test</button>
+				<button type="button" class="btn btn-default" id="trn-test-clear">Clear Log</button>
+			</div>
+			<h5>Transformer Log:</h5>
+			<div class="well">
+				<div class="body logger" id="transformer-log-body"></div>
+			</div>
+			<div id="transformer-result" class="wizard-result"></div>
+	  	</section>
+	{{/content}}
+{{/extend}}

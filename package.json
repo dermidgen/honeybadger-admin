@@ -1,0 +1,22 @@
+{
+  "name": "honeybadger-admin",
+  "version": "0.2.0",
+  "description": "Admin interface for managing Honey Badger services and tasks",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dermidgen/honeybadger-admin.git"
+  },
+  "keywords": [
+    "etl"
+  ],
+  "author": "Danny Graham",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dermidgen/honeybadger-admin/issues"
+  },
+  "homepage": "https://github.com/dermidgen/honeybadger-admin"
+}

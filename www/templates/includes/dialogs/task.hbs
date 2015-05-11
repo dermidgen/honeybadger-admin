@@ -1,0 +1,138 @@
+{{#extend "dialog"}}
+	{{#content "title"}}Task Editor{{/content}}
+	{{#content "id"}}taskWizard{{/content}}
+
+	{{#content "dialog"}}
+	  	<div class="navigator">
+	  		<strong>Steps:</strong> 
+	  		<ul class="steps">
+	  			<li class="step bg-primary">Basic Setup</li>
+	  			<li class="step">Task Details</li>
+	  			<li class="step">Test Task</li>
+	  		</ul>
+	  	</div>
+	  	<section id="task-step-1" class="step active">
+			<h4>Basic Setup</h4>
+			<div class="form-group">
+				<label for="taskName">Task Name</label>
+				<input type="text" class="form-control" placeholder="BHHS Normalizer" name="taskName" id="taskName"/>
+			</div>
+			<div class="form-group">
+				<label for="taskDescription">Task Description</label>
+				<textarea class="form-control" placeholder="BHHS Normalizer" name="taskDescription" id="taskDescription"></textarea>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="taskRundate">Run Date</label>
+						<input type="date" class="form-control" name="taskRundate" id="taskRundate" class="col-md-6"/>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="taskRuntime">Run Time</label>
+						<input type="time" class="form-control" name="taskRuntime" id="taskRuntime"/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="taskRepeat">Task Repeat</label>
+						<select class="form-control" name="taskRepeat" id="taskRepeat">
+							<option value="once" selected="selected">Run Once</option>
+							<option value="daily">Daily</option>
+							<option value="weekly">Weekly</option>
+							<option value="monthly">Monthly</option>
+							<option value="yearly">Yearly</option>
+							<option value="periodically">Periodically</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6" id="taskRepeatOptions">
+					<div class="form-group repeatOptions" id="taskRepeatWeeklyOptions">
+						<label for="taskName">Weekly</label>
+						<p>
+							every <select><option value="1">1</option></select> week on:
+						</p>
+
+						Su <input type="checkbox" name="taskRepeatWeekly-sunday"> 
+						M <input type="checkbox" name="taskRepeatWeekly-monday">
+						Tu <input type="checkbox" name="taskRepeatWeekly-tuesday">
+						W <input type="checkbox" name="taskRepeatWeekly-wednesday">
+						Th <input type="checkbox" name="taskRepeatWeekly-thursday">
+						F <input type="checkbox" name="taskRepeatWeekly-friday">
+						Sa <input type="checkbox" name="taskRepeatWeekly-saturday">
+					</div>
+					<div class="form-group repeatOptions" id="taskRepeatMonthlyOptions">
+						<label for="taskName">Monthly</label>
+						<p>
+							every <select><option value="1" size="2">1</option></select> month on the
+						</p>
+
+						<select>
+							<option value="first-day">first day</option>
+							<option value="first-monday">first Monday</option>
+							<option value="last-day">last day</option>
+						</select>
+						of the month
+					</div>
+					<div class="form-group repeatOptions" id="taskRepeatPeriodicOptions">
+						<label for="taskName">Periodically</label>
+						<p>
+							every <input type="number" value="1"/> days after last run:
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="control-label">Select Extractor</label>
+						<select id="task-extractor-select" class="form-control">
+						</select>
+					</div>
+				</div>
+			</div>
+	  	</section>
+	  	<section id="task-step-2" class="step data-structures">
+			<h4>Task Details</h4>
+			<div class="row">
+				<div class="col-md-6">
+					<h5>Transformers</h5>
+					<ul id="taskTransformers">
+					</ul>
+				</div>
+				<div class="col-md-6">
+					<h5>Loaders</h5>
+					<ul id="taskLoaders">
+					</ul>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h5>ETL Map</h5>
+					<div id="taskETLMap">
+						<ul class="sources"></ul>
+						<ul class="extractors"></ul>
+						<ul class="transformers"></ul>
+						<ul class="loaders"></ul>
+					</div>
+				</div>
+			</div>
+	  	</section>
+	  	<section id="task-step-3" class="step">
+			<h4>Test Task</h4>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" id="task-test">Run Test</button>
+				<button type="button" class="btn btn-default" id="task-test-clear">Clear Log</button>
+				<button type="button" class="btn btn-warning pull-right" id="task-run">Run Task</button>
+			</div>
+			<h5>Task Log:</h5>
+			<div class="well">
+				<div class="body logger" id="task-log-body"></div>
+			</div>
+			<div id="task-result" class="wizard-result"></div>
+	  	</section>
+	{{/content}}
+{{/extend}}

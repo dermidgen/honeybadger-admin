@@ -1,0 +1,24 @@
+
+	<div am-Dialog class="modal fade" id="{{#block "id"}}{{/block}}" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <div class="buttons">
+	        	<button am-Button="danger" class="delete">Delete</button>
+	        	<button am-Button="switch" data-state="on" data-state-value="active" data-on-text="Active" data-off-text="Disabled" class="status">Active</button>
+	        </div>
+	        <h4 class="modal-title" id="{{#block "id"}}{{/block}}ModalLabel">{{#block "title"}}{{/block}}</h4>
+	      </div>
+	      <div class="modal-body wizard">
+    		{{#block "dialog"}}{{/block}}
+	      </div>
+	      <div class="modal-footer">
+	        <button am-Button="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button am-Button="prev" type="button" class="btn btn-primary" disabled="disabled">Back</button>
+	        <button am-Button="next" type="button" class="btn btn-primary" disabled="disabled">Next</button>
+	        <button am-Button="finish" type="button" class="btn btn-primary" disabled="disabled">Finish</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>

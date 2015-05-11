@@ -1,0 +1,174 @@
+{{#extend "dialog"}}
+	{{#content "title"}}Extractor Editor{{/content}}
+	{{#content "id"}}extractorWizard{{/content}}
+
+	{{#content "dialog"}}
+      	<div class="navigator">
+      		<strong>Steps:</strong> 
+      		<ul class="steps">
+      			<li class="step bg-primary">Basic Setup</li>
+      			<li class="step">Source Details</li>
+      			<li class="step">Test Extraction</li>
+      		</ul>
+      	</div>
+      	<section id="ext-step-1" class="step active">
+			<h4>Basic Setup</h4>
+			<div class="form-group">
+				<label for="extractorName">Extractor Name</label>
+				<input type="text" class="form-control" placeholder="My Extractor" name="extractorName" id="extractorName"/>
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="ext-source-select">Data Source</label> &nbsp;
+				<select id="ext-source-select" class="form-control">
+				</select>
+			</div>
+			<div class="source-options" id="ext-ftp-options">
+				<div class="form-group">
+					<label for="ftpRootPath">FTP Base Path</label>
+					<input type="text" class="form-control" placeholder="/data/" name="ftpRootPath" id="ftpRootPath"/>
+				</div>
+					<label for="ftpFileName">FTP Target File</label><br>
+				<div class="row">
+					<div class="col-xs-6">
+						<input type="text" class="form-control" placeholder="data_dump.csv" name="ftpFileName" id="ftpFileName"/> 
+					</div>
+					<div class="col-xs-4">
+        				<button type="button" class="btn btn-primary" id="ext-ftp-browse">Browse</button>
+        			</div>
+				</div>
+				<div id="ext-ftp-browser">
+					<ul class="files">
+					</ul>
+				</div>
+			</div>
+			<div class="source-options" id="ext-rets-options">
+				<div class="form-group">
+					<div class="row form-group">
+						<div class="col-xs-6 rets-resource hide">
+							<label for="ext-rets-resource">RETS Resource</label>
+							<select name="ext-rets-resource" id="ext-rets-resource" class="form-control">
+								<option value="Property">Property</option>
+								<option value="Agent">Agent</option>
+							</select>
+						</div>
+						<div class="col-xs-6 rets-classification hide">
+							<label for="ext-rets-class">RETS Data Class</label>
+							<select name="ext-rets-class" id="ext-rets-class" class="form-control">
+							</select>
+						</div>
+					</div>
+				</div>
+				<h4>
+					<div class="checkbox" style="display:inline">
+						<label for="ext-rets-media">
+							<input type="checkbox" id="ext-rets-media" checked> <strong>Media Extraction</strong>
+						</label>
+					</div>
+				</h4>
+				<div id="#rets-media-options">
+					<p>RETS property photos and other media can also be extracted in a side-channel.</p>
+
+					<p>Some RETS implementations require a standard <em>[Resource][Class][Query]</em> which returns Media records
+					- much like a query for listings or agents. The result set includes a field with a URL for downloading the media object.</p>
+
+					<p>Other RETS implementations use the GetObject call which directly downloads the media from the RETS server.</p>
+
+					<p>The Extract Key is the field that contains the URL for a GetURL strategy. For Media + GetURL, the Extract Key is the Key/Value
+					to be passed to the side-channel media query as variable <em>{ExtractKey}</em>.</p>
+					<div class="row form-group">
+						<div class="col-xs-6">
+							<label for="ext-rets-media-strategy">Media Extraction Strategy</label>
+							<select name="ext-rets-media-strategy" id="ext-rets-media-strategy" class="form-control">
+								<option value="GetURL">GetURL</option>
+								<option value="GetObject">GetObject</option>
+								<option value="MediaGetURL">Media Query + GetURL</option>
+							</select>
+						</div>
+						<div class="col-xs-6">
+							<label for="ext-rets-media-extractKey">Extract Key</label>
+							<input type="text" name="ext-rets-media-extractKey" id="ext-rets-media-extractKey" class="form-control" placeholder="MediaURL,ListingKey"/>
+						</div>
+					</div>
+					<div id="rets-media-query-options" class="row form-group">
+						<div class="col-xs-6">
+							<label for="ext-rets-media-query">Media Query</label>
+							<input type="text" name="ext-rets-media-query" id="ext-rets-media-query" class="form-control" placeholder="(ClassKey={ExtractKey}),(MediaOrder=0)"/>
+						</div>
+						<div class="col-xs-6">
+							<label for="ext-rets-media-query-extractKey">Media Extract Key</label>
+							<input type="text" name="ext-rets-media-query-extractKey" id="ext-rets-media-query-extractKey" class="form-control" placeholder="MediaURL"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="ext-rets-media-target">Media Extraction Destination</label>
+						<input type="text" name="ext-rets-media-target" id="ext-rets-media-target" class="form-control" placeholder="/tmp/MRMLS/images/{ExtractKey}.jpg"/>
+					</div>
+				</div>
+			</div>
+      	</section>
+      	<section id="ext-step-2" class="step">
+			<h4>Source Details</h4>
+			<div class="ext-ftp-options">
+				<div class="form-inline form-group">
+					<label class="control-label" for="ext-source-select">Data Format</label> &nbsp;
+					<select class="form-control" name="ext-data-format" id="ext-data-format">
+						<option value=""> -- Select Data Format -- </option>
+						<option value="delimited-text">Delimited Text (CSV...)</option>
+						<option value="json">JSON</option>
+						<option value="xml">XML</option>
+						<option value="excel">Excel (XLS...)</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="ext-unarchive">Data in Archive</label>
+					<fieldset class="checkbox inline-fieldset" id="ext-archive-opts">
+						<label><input type="radio" name="ext-archive-format" value="false" checked/> N/A</label> &nbsp;
+						<label><input type="radio" name="ext-archive-format" value="zip"/> .zip</label> &nbsp;
+						<label><input type="radio" name="ext-archive-format" value="tar"/> .tar</label> &nbsp;
+						<label><input type="radio" name="ext-archive-format" value="gzip"/> .tar.gz</label>
+					</fieldset>
+				</div>
+				<div id="ext-delimited-text-opts">
+					<div class="form-group">
+						<label>Text Delimiter</label>
+						<fieldset class="checkbox inline-fieldset">
+							<label><input type="radio" name="ext-csv-delimiter" value="csv" checked/> , Comma</label> &nbsp;
+							<label><input type="radio" name="ext-csv-delimiter" value="tsv"/> \t Tab</label> &nbsp;
+							<label><input type="radio" name="ext-csv-delimiter" value="pipe"/> | Pipe</label>
+						</fieldset>
+					</div>
+					<div class="form-group">
+						<label>Escape Character</label>
+						<fieldset class="checkbox inline-fieldset">
+							<label><input type="radio" name="ext-csv-escape" value="default"/> None</label> &nbsp;
+							<label><input type="radio" name="ext-csv-escape" value="dquote" checked/> Double Quote (")</label> &nbsp;
+							<label><input type="radio" name="ext-csv-escape" value="squote"/> Single Quote (')</label>
+						</fieldset>
+					</div>			
+				</div>
+			</div>
+			<div class="ext-rets-options">
+				<div class="form-group">
+					<label for="ext-rets-query">RETS Query <small><a href="https://www.flexmls.com/developers/rets/tutorials/dmql-tutorial/" target="_blank">DMQL2 Reference</a></small></label>
+					<textarea class="form-control" name="ext-rets-query" id="ext-rets-query" placeholder="(LIST_15=RNKKL0G8XM0)"></textarea>
+				</div>
+				<div class="form-group">
+					<label>Field Reference</label>
+					<div class="fields"></div>
+				</div>
+			</div>
+      	</section>
+      	<section id="ext-step-3" class="step">
+			<h4>Test Extraction</h4>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" id="ext-test">Run Test</button>
+				<button type="button" class="btn btn-default" id="ext-test-clear">Clear Log</button>
+			</div>
+			<h5>Extraction Log:</h5>
+			<div class="well">
+				<div class="body logger" id="extractor-log-body"></div>
+			</div>
+			<div id="extraction-result" class="wizard-result"></div>
+      	</section>
+	{{/content}}
+{{/extend}}

@@ -1,0 +1,176 @@
+---
+title: Honey Badger Admin
+layout: admin.hbs
+---
+
+<!-- {{title}} -->
+
+<header>
+	<h1 id="bodyTitle">IMS Data <small id="bodySubTitle">source management console</small></h1>
+</header>
+<article id="bodyContent">
+	<div id="dashboard" class="row">
+		<div class="col-md-6">
+			<h2>Active</h2>
+			<table id="activeSources" data-sortable class="table table-striped table-hover table-condensed">
+			<thead>
+				<tr><th>Name</th><th>Type</th><th>Active Since</th></tr>
+			</thead>
+			<tbody>
+			</tbody>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<h2>Inactive</h2>
+			<table id="inactiveSources" data-sortable class="table table-striped table-hover table-condensed">
+			<thead>
+				<tr><th>Name</th><th>Type</th><th>InActive Since</th></tr>
+			</thead>
+			<tbody>
+			</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="sourceManager">
+		<h2>Sources</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#sourceEditor">New Data Source</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="sourceList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Type</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="extractorManager">
+		<h2>Extractors</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#extractorWizard">New Extractor</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="extractorList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Extraction Target</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="transformManager">
+		<h2>Transformers</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#transformWizard">New Transformer</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="transformerList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Extractor</th><th>Fields</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="loaderManager">
+		<h2>Loaders</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loaderWizard">New Loader</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="loaderList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Target DSN</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="taskManager">
+		<h2>Tasks</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskWizard">New Task</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="taskList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Type</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+		{{!-- <div id="taskETLMap"></div> --}}
+
+	</div>
+</article>

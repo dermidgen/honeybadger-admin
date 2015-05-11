@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{title}}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+	{{> admin-header }}
+
+	<section id="wrap">
+		<div id="body" class="container-fluid">
+
+		{{> body}}
+
+		</div>
+	</section>
+	<footer>
+		<div id="footer" class="container-fluid">
+			<div id="alerts" class="col-md-11"></div>
+			<div id="connection" class="col-md-1" class="alert"><span class="status">Disconnected</span></div>
+		</div>		
+	</footer>
+
+	<!-- editor dialogs -->
+	{{> source}}
+	{{> extractor}}
+	{{> transformer}}
+	{{> loader}}
+	{{> task}}
+
+	<!-- export dialogs -->
+	{{> source.export }}
+
+	<script src="js/honeybadger.js"></script>
+	<script src="js/admin.js"></script>
+	<script>
+	// We could call HoneyBadger.init() - or HoneyBadger.Admin.init() - or Admin.init() - in this case it's all the same method in the end
+	Admin.init();
+	</script>
+</body>
+</html>

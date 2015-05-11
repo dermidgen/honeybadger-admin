@@ -1,0 +1,154 @@
+html, body { height: 100%; }
+body { padding-top: 50px; }
+
+/** something is up with blox and modal backdrop */
+.modal-backdrop {
+	display:none !important;
+}
+
+.modal {
+	background-color: rgba(0,0,0,0.5);
+}
+
+.modal-header .buttons {
+	float:right;
+	margin-right: 1em;
+}
+
+#connection {
+	border-left: 2px solid #eaeaea;
+	text-align: right;
+}
+
+#connection.online {
+	border-left: 2px solid green;
+}
+
+#connection.offline {
+	border-left: 2px solid red;
+}
+
+#wrap {min-height:100%;}
+#body {padding-bottom: 5em;}
+footer {
+	position:relative;
+	height: 5em;
+	margin-top: -5em;
+}
+
+.inline-fieldset {
+	display:inline-block;
+}
+
+.wizard .navigator {
+	margin:0 0 2em 0;
+}
+
+.wizard .navigator .steps {
+	display:inline-block;
+	margin:0;
+	padding:0;
+	/*cursor:pointer;*/
+}
+.wizard .navigator .step { 
+	display:inline;
+	padding:0.4em 0.6em;
+	border:1px solid #ccc;
+	border-radius: 5px;
+	font-size: 0.9em;
+}
+
+.wizard .wizard-result p {
+	padding: 1em;
+	font-size: 1.1em;
+	font-weight: bold;
+	border-radius: 5px;
+}
+
+ul.files {
+	margin:0;
+	padding:0;
+	list-style: none;
+}
+
+li.file {
+	cursor: pointer;
+	padding: 0.2em 0.4em;
+	margin: 0.5em 0;
+	background-color: #eaeaea;
+	border-radius: 4px;
+}
+
+li.file:hover {
+	background-color: #ccc;
+}
+
+.logger {
+	max-height: 20em;
+	overflow-y: scroll;
+}
+
+#ext-step-2 .fields {
+	max-height: 20em;
+	overflow-y: scroll;
+}
+
+#ext-step-2 .fields .item {
+	margin:0.13em 0;
+	padding:0.2em;
+	cursor:pointer;
+	background-color:inherit;
+}
+
+#ext-step-2 .fields .item:hover {
+	background-color:#eaeaea;
+}
+
+#ext-step-2 .fields .item .detail {
+	/*display:none;*/
+}
+
+#transformNormalize .item {
+	display:block;
+}
+
+#transformNormalize .item .name {
+	display:inline-block;
+	margin-left: 0.5em;
+	/*width: 10em;*/
+}
+
+#taskETLMap {
+	text-align: center;
+}
+
+#taskETLMap .section {
+	margin:1em auto;
+}
+
+#taskETLMap .title {
+	font-weight: bold;
+}
+
+#taskETLMap .source, #taskETLMap .extractor, #taskETLMap .transformer, #taskETLMap .loader {
+	display:inline-block;
+	padding:1em;
+	border:1px solid #aaa;
+	border-radius: 5px;
+}
+
+#taskETLMap .source {
+	background: lightgreen;
+}
+
+#taskETLMap .extractor {
+	background: lightblue;
+}
+#taskETLMap .transformer {
+	background: lightgrey;
+}
+#taskETLMap .loader {
+	background: lightyellow;
+}
+
+#taskETLMap .link-tools {  }

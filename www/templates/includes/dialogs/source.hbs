@@ -1,0 +1,92 @@
+{{#extend "dialog"}}
+	{{#content "title"}}Source Editor{{/content}}
+	{{#content "id"}}sourceEditor{{/content}}
+
+	{{#content "dialog"}}
+		<form class="form" role="form" id="sourceEditorForm">
+			<fieldset>
+				<legend>Create a new data source</legend>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="sourcename">Source Name</label>
+							<input type="text" class="form-control" placeholder="MLS Name" name="sourcename" id="sourcename"/>
+						</div>
+					</div>
+					<div class="col-md-6">						
+						<div class="form-group">
+							<label for="sourcetype">Source Type</label>
+							<select class="form-control" id="sourcetype" name="sourcetype">
+								<option value="RETS">RETS</option>
+								<option value="FTP">FTP</option>
+								{{!-- <option value="SOAP">SOAP</option>
+								<option value="REST">REST</option>
+								<option value="XML">XML</option> --}}
+							</select>
+						</div>
+
+					</div>
+				</div>
+				<div class="row" id="sourceTypeOptions">
+					<div class="col-md-12">
+						<div class="form-group option-group" id="source_RETS">
+							<h4>RETS Authentication Info</h4>
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label for="sourceuri">Login URL</label>
+									<input type="text" class="form-control" placeholder="https://rets.server.com:3934/auth/Login.aspx" name="sourceuri" id="sourceuri"/>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-6">
+									<label for="sourceuser">Username</label>
+									<input type="text" class="form-control" placeholder="CARETSIMPACT" name="sourceuser" id="sourceuser"/>
+								</div>
+								<div class="col-md-6">
+									<label for="sourcepassword">Password</label>
+									<input type="password" class="form-control" placeholder="CARETSIMPACT" name="sourcepassword" id="sourcepassword"/>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-6">
+									<label for="sourceua">User-Agent</label>
+									<input type="text" class="form-control" placeholder="RETS-1.0" name="sourceua" id="sourceua"/>
+								</div>
+								<div class="col-md-6">
+									<label for="sourceuapw">User-Agent Password</label>
+									<input type="password" class="form-control" placeholder="IMS-1.0" name="sourceuapw" id="sourceuapw"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group option-group" id="source_FTP">
+							<h4>FTP Source Options</h4>
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label for="ftphost">FTP Host</label>
+									<input type="text" class="form-control" placeholder="ftp.hosts.com" name="ftphost" id="ftphost"/>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-6">
+									<label for="ftpuser">Username</label>
+									<input type="text" class="form-control" placeholder="CARETSIMPACT" name="ftpuser" id="ftpuser"/>
+								</div>
+								<div class="col-md-6">
+									<label for="ftpauth">Password</label>
+									<input type="password" class="form-control" placeholder="CARETSIMPACT" name="ftpauth" id="ftpauth"/>
+								</div>
+							</div>
+						</div>							
+						<div class="row form-group">
+							<div class="col-md-12">
+								<button id="validateBtn" tabindex="-1" type="button" class="btn btn-primary">
+									Validate Connection <span id="sourceValidationStatus" am-Icon="glyph" class="glyphicon"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	{{/content}}
+{{/extend}}
