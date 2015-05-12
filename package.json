@@ -13,10 +13,17 @@
   "keywords": [
     "etl"
   ],
-  "author": "Danny Graham",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dermidgen/honeybadger-admin/issues"
   },
-  "homepage": "https://github.com/dermidgen/honeybadger-admin"
+  "homepage": "https://github.com/dermidgen/honeybadger-admin",
+  "engines": {
+    "node": ">=0.12"
+  },
+  "dependencies": {
+    "express": "^4.12.3",
+    "honeybadger-etl": "git://github.com/dermidgen/honeybadger-etl.git",
+    "honeybadger-service": "git://github.com/dermidgen/honeybadger-service.git"    
+  }
 }
