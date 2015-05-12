@@ -12,7 +12,17 @@
     "url": "https://github.com/dermidgen/honeybadger-admin.git"
   },
   "keywords": [
-    "etl"
+    "ETL",
+    "extract",
+    "transform",
+    "load",
+    "stream",
+    "streaming",
+    "bigdata",
+    "csv",
+    "rets",
+    "ftp",
+    "mysql"
   ],
   "license": "MIT",
   "bugs": {
