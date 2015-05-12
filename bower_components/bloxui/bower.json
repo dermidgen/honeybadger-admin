@@ -1,0 +1,46 @@
+{
+  "name": "bloxui",
+  "description": "HTML, CSS, and JavaScript components for building modern, browser-based user interfaces.",
+  "version": "0.2.0",
+  "author": "Impact Marketing Specialists, Inc.",
+  "license": "MIT",
+  "main": [
+    "dist/css/bloxui.css",
+    "dist/js/bloxui.js",
+    "dist/fonts/glyphicons-halflings-regular.eot",
+    "dist/fonts/glyphicons-halflings-regular.svg",
+    "dist/fonts/glyphicons-halflings-regular.ttf",
+    "dist/fonts/glyphicons-halflings-regular.woff"
+  ],
+  "ignore": [
+    "**/.*",
+    "build",
+    "test",
+    "docs",
+    "*.md",
+    "AUTHORS.txt",
+    "Gruntfile.js",
+    "composer.json",
+    "package.json",
+    "node_modules",
+    "bower_components"
+  ],
+  "keywords": [
+    "bloxui",
+    "javascript",
+    "css",
+    "library"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3",
+    "bootstrap": "~3.3.2",
+    "TableDnD": "*",
+    "sortable": "~0.6.0",
+    "jquery-observe": "~2.0.1",
+    "numeral": "~1.5.3",
+    "filter.js": "https://github.com/dermidgen/filter.js.git#master",
+    "isotope": "~2.1.0",
+    "search.js": "https://github.com/hirokiosame/search.js.git#0.4.0",
+    "mustache": "~1.0.0"
+  }
+}

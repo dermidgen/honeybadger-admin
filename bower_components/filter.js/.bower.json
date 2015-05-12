@@ -1,0 +1,13 @@
+{
+  "name": "filter.js",
+  "homepage": "https://github.com/dermidgen/filter.js",
+  "_release": "3d094bc587",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "3d094bc58732e698ae709aea3259bc3983b51272"
+  },
+  "_source": "https://github.com/dermidgen/filter.js.git",
+  "_target": "master",
+  "_originalSource": "https://github.com/dermidgen/filter.js.git"
+}

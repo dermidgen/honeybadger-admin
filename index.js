@@ -1,1 +1,1 @@
-require('lib/admin');
+require('./lib/admin');

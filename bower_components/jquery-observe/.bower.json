@@ -1,0 +1,38 @@
+{
+  "name": "jquery-observe",
+  "version": "2.0.1",
+  "dependencies": {
+    "jquery": "~1.7 || ~2"
+  },
+  "main": "jquery-observer.js",
+  "homepage": "https://github.com/kapetan/jquery-observe",
+  "author": "Mirza Kapetanovic",
+  "description": "Observe DOM mutations with jQuery",
+  "keywords": [
+    "observe",
+    "observer",
+    "jquery",
+    "dom",
+    "compatibility"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "bower.json",
+    "README.md",
+    "lib",
+    "test",
+    "build.rb",
+    "index.html",
+    "index.js",
+    "**/.*"
+  ],
+  "_release": "2.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.1",
+    "commit": "d37c2d567cff410be6a0328c5b22a6b430f3aef2"
+  },
+  "_source": "git://github.com/kapetan/jquery-observe.git",
+  "_target": "~2.0.1",
+  "_originalSource": "jquery-observe"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "honeybadger",
+  "dependencies": {
+    "bloxui": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ]
+}

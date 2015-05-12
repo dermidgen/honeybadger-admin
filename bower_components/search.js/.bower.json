@@ -1,0 +1,14 @@
+{
+  "name": "search.js",
+  "homepage": "https://github.com/hirokiosame/search.js",
+  "version": "0.4.0",
+  "_release": "0.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.4.0",
+    "commit": "d5e16674b4b922860940e34a2b5c8c5ca1febc9b"
+  },
+  "_source": "https://github.com/hirokiosame/search.js.git",
+  "_target": "0.4.0",
+  "_originalSource": "https://github.com/hirokiosame/search.js.git"
+}

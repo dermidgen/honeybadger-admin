@@ -1,0 +1,70 @@
+[am-Column] {
+	margin:0;
+	display:inline-block;
+	vertical-align: top;
+}
+
+[am-Column~="1/2"] {
+	width:50%;
+}
+
+[am-Column~="1/3"] {
+	width:33%;
+}
+
+[am-Column~="1/4"] {
+	width:25%;
+}
+
+[am-Column~="2/3"] {
+	width:66%;
+}
+
+[am-Column~="3/4"] {
+	width:75%;
+}
+
+[am-Row] {
+	margin:0.5em 0;
+}
+
+[am-Inline] {
+	display:inline-block;
+}
+
+[am-FluidRow] {
+	text-align: justify;
+}
+
+[am-FluidRow]:after {
+	content: "";
+	display: inline-block;
+	width: 100%;
+	line-height: 0;
+	font-size: 0;
+}
+
+[am-FluidItem] {
+	vertical-align: top;
+	display: inline-block;
+}
+
+[am-FluidRow] .stretch {
+	width:100%;
+	display:inline-block;
+	line-height:0;
+	font-size:0;
+}
+
+[am-Position~=right] {
+	float:right;
+}
+
+[am-clear]::after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
