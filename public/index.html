@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Honey Badger Admin</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+	
+	<header class="nav">
+		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="#">Honey Badger</a>
+		    </div>
+
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li class="nav-item active">
+		        	<a href="#" data-toggle="page" data-target="dashboard">Dashboard</a>
+		        </li>
+		        <li class="nav-item dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
+		          <ul class="dropdown-menu">
+		            <li><a href="#sourceManager" data-toggle="page" data-target="sourceManager">Sources</a></li>
+		            <li><a href="#extractorManager" data-toggle="page" data-target="extractorManager">Extractors</a></li>
+		            <li><a href="#transformManager" data-toggle="page" data-target="transformManager">Transformers</a></li>
+		            <li><a href="#loaderManager" data-toggle="page" data-target="loaderManager">Loaders</a></li>
+		            <li><a href="#taskManager" data-toggle="page" data-target="taskManager">Tasks</a></li>
+		            <li class="divider"></li>
+		            <li><a href="#" data-toggle="modal" data-target="#sourceEditor">New Data Source</a></li>
+		            <li><a href="#" data-toggle="modal" data-target="#extractorWizard">New Data Extractor</a></li>
+		            <li><a href="#" data-toggle="modal" data-target="#transformWizard">New Data Transformer</a></li>
+		            <li><a href="#" data-toggle="modal" data-target="#loaderWizard">New Data Loader</a></li>
+		            <li><a href="#" data-toggle="modal" data-target="#taskWizard">New Task</a></li>
+		            <li class="divider"></li>
+		            <li><a href="#" data-toggle="modal" data-target="#sourceExport">Export Source List</a></li>
+		            <li><a href="#">Data Utilities</a></li>
+		          </ul>
+		        </li>
+		        <li class="nav-item dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
+		          <ul class="dropdown-menu">
+		            <li><a href="#">Dashboard</a></li>
+		            <li><a href="#" data-toggle="modal" data-target="#open" onclick="openModal();">Custom Reports</a></li>
+		            <li><a href="#">Export Report</a></li>
+		            <li class="divider"></li>
+		            <li><a href="#">System Status</a></li>
+		          </ul>
+		        </li>
+		        <li class="nav-item">
+		        	<a href="#">Monitor</a>
+		        </li>
+		      </ul>
+		      <form class="navbar-form navbar-right" role="search">
+		        <div class="form-group">
+		          <input type="text" class="form-control" placeholder="Source Search">
+		        </div>
+		        <button type="submit" class="btn btn-default">Submit</button>
+		      </form>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+	</header>
+
+
+	<section id="wrap">
+		<div id="body" class="container-fluid">
+
+		
+
+<!-- Honey Badger Admin -->
+
+<header>
+	<h1 id="bodyTitle">IMS Data <small id="bodySubTitle">source management console</small></h1>
+</header>
+<article id="bodyContent">
+	<div id="dashboard" class="row">
+		<div class="col-md-6">
+			<h2>Active</h2>
+			<table id="activeSources" data-sortable class="table table-striped table-hover table-condensed">
+			<thead>
+				<tr><th>Name</th><th>Type</th><th>Active Since</th></tr>
+			</thead>
+			<tbody>
+			</tbody>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<h2>Inactive</h2>
+			<table id="inactiveSources" data-sortable class="table table-striped table-hover table-condensed">
+			<thead>
+				<tr><th>Name</th><th>Type</th><th>InActive Since</th></tr>
+			</thead>
+			<tbody>
+			</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="sourceManager">
+		<h2>Sources</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#sourceEditor">New Data Source</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="sourceList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Type</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="extractorManager">
+		<h2>Extractors</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#extractorWizard">New Extractor</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="extractorList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Extraction Target</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="transformManager">
+		<h2>Transformers</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#transformWizard">New Transformer</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="transformerList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Extractor</th><th>Fields</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="loaderManager">
+		<h2>Loaders</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loaderWizard">New Loader</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="loaderList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Target DSN</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="taskManager">
+		<h2>Tasks</h2>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskWizard">New Task</button>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">Activate</button>
+						<button type="button" class="btn btn-default">Disable</button>
+						<button type="button" class="btn btn-default">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="taskList" data-sortable class="table table-striped table-hover table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Type</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+				</table>
+			</div>
+		</div>
+		
+
+	</div>
+</article>
+
+		</div>
+	</section>
+	<footer>
+		<div id="footer" class="container-fluid">
+			<div id="alerts" class="col-md-11"></div>
+			<div id="connection" class="col-md-1" class="alert"><span class="status">Disconnected</span></div>
+		</div>		
+	</footer>
+
+	<!-- editor dialogs -->
+	
+	<div am-Dialog class="modal fade" id="sourceEditor" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <div class="buttons">
+	        	<button am-Button="danger" class="delete">Delete</button>
+	        	<button am-Button="switch" data-state="on" data-state-value="active" data-on-text="Active" data-off-text="Disabled" class="status">Active</button>
+	        </div>
+	        <h4 class="modal-title" id="sourceEditorModalLabel">Source Editor</h4>
+	      </div>
+	      <div class="modal-body wizard">
+    		
+		<form class="form" role="form" id="sourceEditorForm">
+			<fieldset>
+				<legend>Create a new data source</legend>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="sourcename">Source Name</label>
+							<input type="text" class="form-control" placeholder="MLS Name" name="sourcename" id="sourcename"/>
+						</div>
+					</div>
+					<div class="col-md-6">						
+						<div class="form-group">
+							<label for="sourcetype">Source Type</label>
+							<select class="form-control" id="sourcetype" name="sourcetype">
+								<option value="RETS">RETS</option>
+								<option value="FTP">FTP</option>
+								
+							</select>
+						</div>
+
+					</div>
+				</div>
+				<div class="row" id="sourceTypeOptions">
+					<div class="col-md-12">
+						<div class="form-group option-group" id="source_RETS">
+							<h4>RETS Authentication Info</h4>
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label for="sourceuri">Login URL</label>
+									<input type="text" class="form-control" placeholder="https://rets.server.com:3934/auth/Login.aspx" name="sourceuri" id="sourceuri"/>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-6">
+									<label for="sourceuser">Username</label>
+									<input type="text" class="form-control" placeholder="CARETSIMPACT" name="sourceuser" id="sourceuser"/>
+								</div>
+								<div class="col-md-6">
+									<label for="sourcepassword">Password</label>
+									<input type="password" class="form-control" placeholder="CARETSIMPACT" name="sourcepassword" id="sourcepassword"/>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-6">
+									<label for="sourceua">User-Agent</label>
+									<input type="text" class="form-control" placeholder="RETS-1.0" name="sourceua" id="sourceua"/>
+								</div>
+								<div class="col-md-6">
+									<label for="sourceuapw">User-Agent Password</label>
+									<input type="password" class="form-control" placeholder="IMS-1.0" name="sourceuapw" id="sourceuapw"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group option-group" id="source_FTP">
+							<h4>FTP Source Options</h4>
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label for="ftphost">FTP Host</label>
+									<input type="text" class="form-control" placeholder="ftp.hosts.com" name="ftphost" id="ftphost"/>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-6">
+									<label for="ftpuser">Username</label>
+									<input type="text" class="form-control" placeholder="CARETSIMPACT" name="ftpuser" id="ftpuser"/>
+								</div>
+								<div class="col-md-6">
+									<label for="ftpauth">Password</label>
+									<input type="password" class="form-control" placeholder="CARETSIMPACT" name="ftpauth" id="ftpauth"/>
+								</div>
+							</div>
+						</div>							
+						<div class="row form-group">
+							<div class="col-md-12">
+								<button id="validateBtn" tabindex="-1" type="button" class="btn btn-primary">
+									Validate Connection <span id="sourceValidationStatus" am-Icon="glyph" class="glyphicon"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	
+	      </div>
+	      <div class="modal-footer">
+	        <button am-Button="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button am-Button="prev" type="button" class="btn btn-primary" disabled="disabled">Back</button>
+	        <button am-Button="next" type="button" class="btn btn-primary" disabled="disabled">Next</button>
+	        <button am-Button="finish" type="button" class="btn btn-primary" disabled="disabled">Finish</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	
+	<div am-Dialog class="modal fade" id="extractorWizard" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <div class="buttons">
+	        	<button am-Button="danger" class="delete">Delete</button>
+	        	<button am-Button="switch" data-state="on" data-state-value="active" data-on-text="Active" data-off-text="Disabled" class="status">Active</button>
+	        </div>
+	        <h4 class="modal-title" id="extractorWizardModalLabel">Extractor Editor</h4>
+	      </div>
+	      <div class="modal-body wizard">
+    		
+      	<div class="navigator">
+      		<strong>Steps:</strong> 
+      		<ul class="steps">
+      			<li class="step bg-primary">Basic Setup</li>
+      			<li class="step">Source Details</li>
+      			<li class="step">Test Extraction</li>
+      		</ul>
+      	</div>
+      	<section id="ext-step-1" class="step active">
+			<h4>Basic Setup</h4>
+			<div class="form-group">
+				<label for="extractorName">Extractor Name</label>
+				<input type="text" class="form-control" placeholder="My Extractor" name="extractorName" id="extractorName"/>
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="ext-source-select">Data Source</label> &nbsp;
+				<select id="ext-source-select" class="form-control">
+				</select>
+			</div>
+			<div class="source-options" id="ext-ftp-options">
+				<div class="form-group">
+					<label for="ftpRootPath">FTP Base Path</label>
+					<input type="text" class="form-control" placeholder="/data/" name="ftpRootPath" id="ftpRootPath"/>
+				</div>
+					<label for="ftpFileName">FTP Target File</label><br>
+				<div class="row">
+					<div class="col-xs-6">
+						<input type="text" class="form-control" placeholder="data_dump.csv" name="ftpFileName" id="ftpFileName"/> 
+					</div>
+					<div class="col-xs-4">
+        				<button type="button" class="btn btn-primary" id="ext-ftp-browse">Browse</button>
+        			</div>
+				</div>
+				<div id="ext-ftp-browser">
+					<ul class="files">
+					</ul>
+				</div>
+			</div>
+			<div class="source-options" id="ext-rets-options">
+				<div class="form-group">
+					<div class="row form-group">
+						<div class="col-xs-6 rets-resource hide">
+							<label for="ext-rets-resource">RETS Resource</label>
+							<select name="ext-rets-resource" id="ext-rets-resource" class="form-control">
+								<option value="Property">Property</option>
+								<option value="Agent">Agent</option>
+							</select>
+						</div>
+						<div class="col-xs-6 rets-classification hide">
+							<label for="ext-rets-class">RETS Data Class</label>
+							<select name="ext-rets-class" id="ext-rets-class" class="form-control">
+							</select>
+						</div>
+					</div>
+				</div>
+				<h4>
+					<div class="checkbox" style="display:inline">
+						<label for="ext-rets-media">
+							<input type="checkbox" id="ext-rets-media" checked> <strong>Media Extraction</strong>
+						</label>
+					</div>
+				</h4>
+				<div id="#rets-media-options">
+					<p>RETS property photos and other media can also be extracted in a side-channel.</p>
+
+					<p>Some RETS implementations require a standard <em>[Resource][Class][Query]</em> which returns Media records
+					- much like a query for listings or agents. The result set includes a field with a URL for downloading the media object.</p>
+
+					<p>Other RETS implementations use the GetObject call which directly downloads the media from the RETS server.</p>
+
+					<p>The Extract Key is the field that contains the URL for a GetURL strategy. For Media + GetURL, the Extract Key is the Key/Value
+					to be passed to the side-channel media query as variable <em>{ExtractKey}</em>.</p>
+					<div class="row form-group">
+						<div class="col-xs-6">
+							<label for="ext-rets-media-strategy">Media Extraction Strategy</label>
+							<select name="ext-rets-media-strategy" id="ext-rets-media-strategy" class="form-control">
+								<option value="GetURL">GetURL</option>
+								<option value="GetObject">GetObject</option>
+								<option value="MediaGetURL">Media Query + GetURL</option>
+							</select>
+						</div>
+						<div class="col-xs-6">
+							<label for="ext-rets-media-extractKey">Extract Key</label>
+							<input type="text" name="ext-rets-media-extractKey" id="ext-rets-media-extractKey" class="form-control" placeholder="MediaURL,ListingKey"/>
+						</div>
+					</div>
+					<div id="rets-media-query-options" class="row form-group">
+						<div class="col-xs-6">
+							<label for="ext-rets-media-query">Media Query</label>
+							<input type="text" name="ext-rets-media-query" id="ext-rets-media-query" class="form-control" placeholder="(ClassKey={ExtractKey}),(MediaOrder=0)"/>
+						</div>
+						<div class="col-xs-6">
+							<label for="ext-rets-media-query-extractKey">Media Extract Key</label>
+							<input type="text" name="ext-rets-media-query-extractKey" id="ext-rets-media-query-extractKey" class="form-control" placeholder="MediaURL"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="ext-rets-media-target">Media Extraction Destination</label>
+						<input type="text" name="ext-rets-media-target" id="ext-rets-media-target" class="form-control" placeholder="/tmp/MRMLS/images/{ExtractKey}.jpg"/>
+					</div>
+				</div>
+			</div>
+      	</section>
+      	<section id="ext-step-2" class="step">
+			<h4>Source Details</h4>
+			<div class="ext-ftp-options">
+				<div class="form-inline form-group">
+					<label class="control-label" for="ext-source-select">Data Format</label> &nbsp;
+					<select class="form-control" name="ext-data-format" id="ext-data-format">
+						<option value=""> -- Select Data Format -- </option>
+						<option value="delimited-text">Delimited Text (CSV...)</option>
+						<option value="json">JSON</option>
+						<option value="xml">XML</option>
+						<option value="excel">Excel (XLS...)</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="ext-unarchive">Data in Archive</label>
+					<fieldset class="checkbox inline-fieldset" id="ext-archive-opts">
+						<label><input type="radio" name="ext-archive-format" value="false" checked/> N/A</label> &nbsp;
+						<label><input type="radio" name="ext-archive-format" value="zip"/> .zip</label> &nbsp;
+						<label><input type="radio" name="ext-archive-format" value="tar"/> .tar</label> &nbsp;
+						<label><input type="radio" name="ext-archive-format" value="gzip"/> .tar.gz</label>
+					</fieldset>
+				</div>
+				<div id="ext-delimited-text-opts">
+					<div class="form-group">
+						<label>Text Delimiter</label>
+						<fieldset class="checkbox inline-fieldset">
+							<label><input type="radio" name="ext-csv-delimiter" value="csv" checked/> , Comma</label> &nbsp;
+							<label><input type="radio" name="ext-csv-delimiter" value="tsv"/> \t Tab</label> &nbsp;
+							<label><input type="radio" name="ext-csv-delimiter" value="pipe"/> | Pipe</label>
+						</fieldset>
+					</div>
+					<div class="form-group">
+						<label>Escape Character</label>
+						<fieldset class="checkbox inline-fieldset">
+							<label><input type="radio" name="ext-csv-escape" value="default"/> None</label> &nbsp;
+							<label><input type="radio" name="ext-csv-escape" value="dquote" checked/> Double Quote (")</label> &nbsp;
+							<label><input type="radio" name="ext-csv-escape" value="squote"/> Single Quote (')</label>
+						</fieldset>
+					</div>			
+				</div>
+			</div>
+			<div class="ext-rets-options">
+				<div class="form-group">
+					<label for="ext-rets-query">RETS Query <small><a href="https://www.flexmls.com/developers/rets/tutorials/dmql-tutorial/" target="_blank">DMQL2 Reference</a></small></label>
+					<textarea class="form-control" name="ext-rets-query" id="ext-rets-query" placeholder="(LIST_15=RNKKL0G8XM0)"></textarea>
+				</div>
+				<div class="form-group">
+					<label>Field Reference</label>
+					<div class="fields"></div>
+				</div>
+			</div>
+      	</section>
+      	<section id="ext-step-3" class="step">
+			<h4>Test Extraction</h4>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" id="ext-test">Run Test</button>
+				<button type="button" class="btn btn-default" id="ext-test-clear">Clear Log</button>
+			</div>
+			<h5>Extraction Log:</h5>
+			<div class="well">
+				<div class="body logger" id="extractor-log-body"></div>
+			</div>
+			<div id="extraction-result" class="wizard-result"></div>
+      	</section>
+	
+	      </div>
+	      <div class="modal-footer">
+	        <button am-Button="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button am-Button="prev" type="button" class="btn btn-primary" disabled="disabled">Back</button>
+	        <button am-Button="next" type="button" class="btn btn-primary" disabled="disabled">Next</button>
+	        <button am-Button="finish" type="button" class="btn btn-primary" disabled="disabled">Finish</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	
+	<div am-Dialog class="modal fade" id="transformWizard" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <div class="buttons">
+	        	<button am-Button="danger" class="delete">Delete</button>
+	        	<button am-Button="switch" data-state="on" data-state-value="active" data-on-text="Active" data-off-text="Disabled" class="status">Active</button>
+	        </div>
+	        <h4 class="modal-title" id="transformWizardModalLabel">Transform Editor</h4>
+	      </div>
+	      <div class="modal-body wizard">
+    		
+	  	<div class="navigator">
+	  		<strong>Steps:</strong> 
+	  		<ul class="steps">
+	  			<li class="step bg-primary">Basic Setup</li>
+	  			<li class="step">Transformer Details</li>
+	  			<li class="step">Test Transformer</li>
+	  		</ul>
+	  	</div>
+	  	<section id="trn-step-1" class="step active">
+			<h4>Basic Setup</h4>
+			<div class="form-group">
+				<label for="transformerName">Transformer Name</label>
+				<input type="text" class="form-control" placeholder="BHHS Normalizer" name="transformerName" id="transformerName"/>
+			</div>
+			<div class="form-group">
+				<label for="transformerDescription">Transformer Description</label>
+				<textarea class="form-control" placeholder="BHHS Normalizer" name="transformerDescription" id="transformerDescription"></textarea>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label" for="trn-source-select">Transformer Input</label>
+						<select id="trn-source-toggle" class="form-control">
+							<option value="">-- Select an input definition --</option>
+							<option value="custom">Custom source definition</option>
+							<option value="extractor-template">Use extractor as a template</option>
+							<option value="extractor-bind">Bind to an extractor</option>
+						</select>
+						
+					</div>
+					<div class="form-group">
+						<label class="control-label">Select Extractor</label>
+						<select id="trn-source-select" class="form-control" disabled="disabled">
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<small>
+						<dl>
+							<dt>Custom source definition</dt>
+							<dd>Define your own fields and data types</dd>
+							<dt>Use extractor as a template</dt>
+							<dd>Start with the fields an extractor has found a go from there</dd>
+							<dt>Bind to an extractor <em>*experimental*</em></dt>
+							<dd>Always use the fields from this extractor - and adapt to changes</dd>
+						</dl>
+					</small>
+				</div>
+			</div>
+	  	</section>
+	  	<section id="trn-step-2" class="step data-structures">
+			<h4>Transformer Details</h4>
+			<div class="form-group">
+				<label class="control-label">Transform Type</label>
+				<select name="trn-transform-type" id="trn-transform-type" class="form-control">
+					<option value="">-- Select a transformation type --</option>
+					<option value="normalize">Normalize</option>
+					<option value="map">Custom Mapping</option>
+				</select>
+			</div>
+			<div id="transformNormalize">
+			</div>
+			<div id="transformMapper">
+				<div class="fields">
+				</div>
+				<div class="mapper form-group">
+					<textarea class="form-control" name="trn-map" id="trn-map" rows="10"></textarea>
+				</div>
+			</div>
+	  	</section>
+	  	<section id="trn-step-3" class="step">
+			<h4>Test Transformer</h4>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" id="trn-test">Run Test</button>
+				<button type="button" class="btn btn-default" id="trn-test-clear">Clear Log</button>
+			</div>
+			<h5>Transformer Log:</h5>
+			<div class="well">
+				<div class="body logger" id="transformer-log-body"></div>
+			</div>
+			<div id="transformer-result" class="wizard-result"></div>
+	  	</section>
+	
+	      </div>
+	      <div class="modal-footer">
+	        <button am-Button="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button am-Button="prev" type="button" class="btn btn-primary" disabled="disabled">Back</button>
+	        <button am-Button="next" type="button" class="btn btn-primary" disabled="disabled">Next</button>
+	        <button am-Button="finish" type="button" class="btn btn-primary" disabled="disabled">Finish</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	
+	<div am-Dialog class="modal fade" id="loaderWizard" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <div class="buttons">
+	        	<button am-Button="danger" class="delete">Delete</button>
+	        	<button am-Button="switch" data-state="on" data-state-value="active" data-on-text="Active" data-off-text="Disabled" class="status">Active</button>
+	        </div>
+	        <h4 class="modal-title" id="loaderWizardModalLabel">Loader Editor</h4>
+	      </div>
+	      <div class="modal-body wizard">
+    		
+
+      	<div class="navigator">
+      		<strong>Steps:</strong> 
+      		<ul class="steps">
+      			<li class="step bg-primary">Basic Setup</li>
+      			<li class="step">Loader Details</li>
+      			<li class="step">Test Loader</li>
+      		</ul>
+      	</div>
+      	<section id="ldr-step-1" class="step active">
+			<h4>Basic Setup</h4>
+			<div class="form-group">
+				<label for="loaderName">Loader Name</label>
+				<input type="text" class="form-control" placeholder="BHHS Normalizer" name="loaderName" id="loaderName"/>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label" for="ldr-source-select">Data Transformer</label> &nbsp;
+						<select id="ldr-source-select" class="form-control">
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label" for="ldr-target-type">Data Target</label> &nbsp;
+						<select class="form-control" name="ldr-target-type" id="ldr-target-type">
+							<option value="">-- Select data target --</option>
+							<option value="mysql">MySQL</option>
+							<option value="couchdb">CouchDB</option>
+							<option value="ftp">FTP</option>
+							<option value="filesystem">Filesystem</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div id="loaderDSN">
+				<div id="loaderMySQL">
+					<div class="form-group">
+						<label class="control-label" for="ldr-mysql-dsn">MySQL Credentials, Host and Port</label>
+						<input type="text" class="form-control" name="ldr-mysql-dsn" id="ldr-mysql-dsn" placeholder="mysql://user:pass@hostname:3306" />
+					</div>
+					<div class="form-group">
+						<button id="ldr-mysql-validate" tabindex="-1" type="button" class="btn btn-primary">
+							Validate Connection <span class="validation-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+				<div id="loaderCouchDB">
+					<div class="form-group">
+						<label class="control-label" for="ldr-couchdb-dsn">CouchDB Credentials, Host and Port</label>
+						<input type="text" class="form-control" name="ldr-couchdb-dsn" id="ldr-couchdb-dsn" placeholder="couchdb://user:pass@hostname:5984" />
+					</div>
+					<div class="form-group">
+						<button id="ldr-couchdb-validate" tabindex="-1" type="button" class="btn btn-primary">
+							Validate Connection <span class="validation-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+				<div id="loaderFTP">
+					<div class="form-group">
+						<label class="control-label" for="ldr-ftp-dsn">FTP Credentials, Host and Port</label>
+						<input type="text" class="form-control" name="ldr-ftp-dsn" id="ldr-ftp-dsn" placeholder="ftp://user:pass@hostname:21" />
+					</div>
+					<div class="form-group">
+						<button id="ldr-ftp-validate" tabindex="-1" type="button" class="btn btn-primary">
+							Validate Connection <span class="validation-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+				<div id="loaderFilesystem">
+					<div class="form-group">
+						<label class="control-label" for="ldr-ftp-basepath">Filesystem Base Path</label>
+						<input type="text" class="form-control" name="ldr-filesystem-basepath" id="ldr-filesystem-basepath" placeholder="/mnt/data/archive/" />
+					</div>
+					<div class="form-group">
+						<button id="ldr-filesystem-validate" tabindex="-1" type="button" class="btn btn-primary">
+							Validate Path <span class="validation-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+      	</section>
+      	<section id="ldr-step-2" class="step">
+			<h4>Loader Details</h4>
+			<div class="loader-options" id="loaderSchemas">
+				<div class="create well">
+					<p>This database does not appear to have any schemas that support your transformer's output.</p>
+					<p><center><button id="ldr-new-schema" class="btn btn-primary">Create Schema</button></center></p>
+				</div>
+				<div class="fields">
+					<p>Before creating a new schema on your target, we need to verify the data type for each field in your data source</p>
+					<div class="form-group">
+						<label class="control-label" for="ldr-target-schema">Schema Name</label>
+						<input type="text" class="form-control" placeholder="my_schema" id="ldr-target-schema" name="ldr-target-schema"/>
+					</div>
+					<div class="maps">
+					</div>
+					<div class="form-group">
+						<button id="ldr-create-schema" tabindex="-1" type="button" class="btn btn-primary">
+							Create Schema <span class="schema-status glyphicon"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="loader-options" id="ldr-ftp-options">
+				<div class="form-group">
+					<label for="ldr-ftp-basepath">FTP Base Path</label>
+					<input type="text" class="form-control" placeholder="/data/" name="ldr-ftp-basepath" id="ldr-ftp-basepath"/>
+				</div>
+					<label for="ldr-ftp-filename">FTP Target File</label><br>
+				<div class="row">
+					<div class="col-xs-8">
+						<input type="text" class="form-control" placeholder="listings-%source.filename%-%date%.csv" name="ldr-ftp-filename" id="ldr-ftp-filename"/> 
+					</div>
+					<div class="col-xs-4">
+        				<button type="button" class="btn btn-primary" id="ldr-ftp-browse">Browse</button>
+        			</div>
+				</div>
+				<div><small>You can use variables to help name your file. </small><span am-Icon="glyph" class="question-sign"></span></div>
+				<div id="ldr-ftp-browser">
+					<ul class="files">
+					</ul>
+				</div>
+			</div>
+			<div class="loader-options" id="ldr-filesystem-options">
+				<div class="form-group">
+					<label for="ldr-filesystem-filename">Filesystem Output Filename</label>
+					<input type="text" class="form-control" placeholder="listings-%source.filename%-%date%.csv" name="ldr-filesystem-filename" id="ldr-filesystem-filename"/>
+				</div>
+				<small>You can use variables to help name your file. </small><span am-Icon="glyph" class="question-sign"></span>
+			</div>
+      	</section>
+      	<section id="ldr-step-3" class="step">
+			<h4>Test Loader</h4>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" id="ldr-test">Run Test</button>
+				<button type="button" class="btn btn-default" id="ldr-test-clear">Clear Log</button>
+			</div>
+			<h5>Loader Log:</h5>
+			<div class="well">
+				<div class="body logger" id="loader-log-body"></div>
+			</div>
+			<div id="loader-result" class="wizard-result"></div>
+      	</section>
+	
+	      </div>
+	      <div class="modal-footer">
+	        <button am-Button="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button am-Button="prev" type="button" class="btn btn-primary" disabled="disabled">Back</button>
+	        <button am-Button="next" type="button" class="btn btn-primary" disabled="disabled">Next</button>
+	        <button am-Button="finish" type="button" class="btn btn-primary" disabled="disabled">Finish</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	
+	<div am-Dialog class="modal fade" id="taskWizard" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <div class="buttons">
+	        	<button am-Button="danger" class="delete">Delete</button>
+	        	<button am-Button="switch" data-state="on" data-state-value="active" data-on-text="Active" data-off-text="Disabled" class="status">Active</button>
+	        </div>
+	        <h4 class="modal-title" id="taskWizardModalLabel">Task Editor</h4>
+	      </div>
+	      <div class="modal-body wizard">
+    		
+	  	<div class="navigator">
+	  		<strong>Steps:</strong> 
+	  		<ul class="steps">
+	  			<li class="step bg-primary">Basic Setup</li>
+	  			<li class="step">Task Details</li>
+	  			<li class="step">Test Task</li>
+	  		</ul>
+	  	</div>
+	  	<section id="task-step-1" class="step active">
+			<h4>Basic Setup</h4>
+			<div class="form-group">
+				<label for="taskName">Task Name</label>
+				<input type="text" class="form-control" placeholder="BHHS Normalizer" name="taskName" id="taskName"/>
+			</div>
+			<div class="form-group">
+				<label for="taskDescription">Task Description</label>
+				<textarea class="form-control" placeholder="BHHS Normalizer" name="taskDescription" id="taskDescription"></textarea>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="taskRundate">Run Date</label>
+						<input type="date" class="form-control" name="taskRundate" id="taskRundate" class="col-md-6"/>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="taskRuntime">Run Time</label>
+						<input type="time" class="form-control" name="taskRuntime" id="taskRuntime"/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="taskRepeat">Task Repeat</label>
+						<select class="form-control" name="taskRepeat" id="taskRepeat">
+							<option value="once" selected="selected">Run Once</option>
+							<option value="daily">Daily</option>
+							<option value="weekly">Weekly</option>
+							<option value="monthly">Monthly</option>
+							<option value="yearly">Yearly</option>
+							<option value="periodically">Periodically</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6" id="taskRepeatOptions">
+					<div class="form-group repeatOptions" id="taskRepeatWeeklyOptions">
+						<label for="taskName">Weekly</label>
+						<p>
+							every <select><option value="1">1</option></select> week on:
+						</p>
+
+						Su <input type="checkbox" name="taskRepeatWeekly-sunday"> 
+						M <input type="checkbox" name="taskRepeatWeekly-monday">
+						Tu <input type="checkbox" name="taskRepeatWeekly-tuesday">
+						W <input type="checkbox" name="taskRepeatWeekly-wednesday">
+						Th <input type="checkbox" name="taskRepeatWeekly-thursday">
+						F <input type="checkbox" name="taskRepeatWeekly-friday">
+						Sa <input type="checkbox" name="taskRepeatWeekly-saturday">
+					</div>
+					<div class="form-group repeatOptions" id="taskRepeatMonthlyOptions">
+						<label for="taskName">Monthly</label>
+						<p>
+							every <select><option value="1" size="2">1</option></select> month on the
+						</p>
+
+						<select>
+							<option value="first-day">first day</option>
+							<option value="first-monday">first Monday</option>
+							<option value="last-day">last day</option>
+						</select>
+						of the month
+					</div>
+					<div class="form-group repeatOptions" id="taskRepeatPeriodicOptions">
+						<label for="taskName">Periodically</label>
+						<p>
+							every <input type="number" value="1"/> days after last run:
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="control-label">Select Extractor</label>
+						<select id="task-extractor-select" class="form-control">
+						</select>
+					</div>
+				</div>
+			</div>
+	  	</section>
+	  	<section id="task-step-2" class="step data-structures">
+			<h4>Task Details</h4>
+			<div class="row">
+				<div class="col-md-6">
+					<h5>Transformers</h5>
+					<ul id="taskTransformers">
+					</ul>
+				</div>
+				<div class="col-md-6">
+					<h5>Loaders</h5>
+					<ul id="taskLoaders">
+					</ul>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h5>ETL Map</h5>
+					<div id="taskETLMap">
+						<ul class="sources"></ul>
+						<ul class="extractors"></ul>
+						<ul class="transformers"></ul>
+						<ul class="loaders"></ul>
+					</div>
+				</div>
+			</div>
+	  	</section>
+	  	<section id="task-step-3" class="step">
+			<h4>Test Task</h4>
+			<div class="form-group">
+				<button type="button" class="btn btn-primary" id="task-test">Run Test</button>
+				<button type="button" class="btn btn-default" id="task-test-clear">Clear Log</button>
+				<button type="button" class="btn btn-warning pull-right" id="task-run">Run Task</button>
+			</div>
+			<h5>Task Log:</h5>
+			<div class="well">
+				<div class="body logger" id="task-log-body"></div>
+			</div>
+			<div id="task-result" class="wizard-result"></div>
+	  	</section>
+	
+	      </div>
+	      <div class="modal-footer">
+	        <button am-Button="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button am-Button="prev" type="button" class="btn btn-primary" disabled="disabled">Back</button>
+	        <button am-Button="next" type="button" class="btn btn-primary" disabled="disabled">Next</button>
+	        <button am-Button="finish" type="button" class="btn btn-primary" disabled="disabled">Finish</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+
+	<!-- export dialogs -->
+	
+	<div am-Dialog class="modal fade" id="sourceExport" tabindex="-1" role="dialog" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <div class="buttons">
+	        	<button am-Button="danger" class="delete">Delete</button>
+	        	<button am-Button="switch" data-state="on" data-state-value="active" data-on-text="Active" data-off-text="Disabled" class="status">Active</button>
+	        </div>
+	        <h4 class="modal-title" id="sourceExportModalLabel">Source Export</h4>
+	      </div>
+	      <div class="modal-body wizard">
+    		
+		<div class="modal fade" id="sourceExport" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <h4 class="modal-title" id="myModalLabel">Export Source List</h4>
+		      </div>
+		      <div class="modal-body">
+		      	<div class="well" style="max-width: 400px; margin: 0 auto">
+			        <h4>Preview</h4>
+					<div id="preview"></div>
+		      	</div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	
+	      </div>
+	      <div class="modal-footer">
+	        <button am-Button="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button am-Button="prev" type="button" class="btn btn-primary" disabled="disabled">Back</button>
+	        <button am-Button="next" type="button" class="btn btn-primary" disabled="disabled">Next</button>
+	        <button am-Button="finish" type="button" class="btn btn-primary" disabled="disabled">Finish</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+
+	<script src="js/honeybadger.js"></script>
+	<script src="js/admin.js"></script>
+	<script>
+	// We could call HoneyBadger.init() - or HoneyBadger.Admin.init() - or Admin.init() - in this case it's all the same method in the end
+	Admin.init();
+	</script>
+</body>
+</html>

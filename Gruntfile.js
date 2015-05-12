@@ -4,23 +4,20 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     clean: {
-      release: [
-        "release/**"
-      ],
-      admin: ["release/admin/**"]
+      release: ["public/**"]
     },
     assemble: {
       release: {
         options: {
-          layoutdir: 'src/www/templates/layouts',
-          partials: ['src/www/templates/includes/**/*.hbs']
+          layoutdir: 'www/templates/layouts',
+          partials: ['www/templates/includes/**/*.hbs']
         },
         files: [{
           expand: true,
           flatten: true,
-          cwd: 'src',
+          cwd: './',
           src: ['www/templates/pages/**/*.hbs'],
-          dest: 'release/admin/www'
+          dest: 'public'
         }]
       }
     },
@@ -31,25 +28,25 @@ module.exports = function(grunt) {
       admin: {
         src: [
           'bower_components/bloxui/dist/js/bloxui.js',
-          'src/www/js/admin.js',
-          'src/www/js/admin/*.js'
+          'www/js/admin.js',
+          'www/js/admin/*.js'
         ],
-        dest: 'release/admin/www/js/admin.js'
+        dest: 'public/js/admin.js'
       },
       clientbase: {
         src: [
-          'src/www/js/util.js',
-          'src/www/js/honeybadger.js',
-          'src/www/js/honeybadger/*.js'
+          'www/js/util.js',
+          'www/js/honeybadger.js',
+          'www/js/honeybadger/*.js'
         ],
-        dest: 'release/admin/www/js/honeybadger.js'
+        dest: 'public/js/honeybadger.js'
       },
       css: {
         src: [
           'bower_components/bloxui/dist/css/bloxui.css',
-          'src/www/css/**.css',
+          'www/css/**.css',
         ],
-        dest: 'release/admin/www/css/admin.css'
+        dest: 'public/css/admin.css'
       }
     },
     uglify: {
@@ -59,8 +56,8 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          'release/admin/www/js/honeybadger-min.js': ['release/admin/www/js/honeybadger.js'],
-          'release/admin/www/js/admin-min.js': ['release/admin/www/js/admin.js']
+          'public/js/honeybadger-min.js': ['public/js/honeybadger.js'],
+          'public/js/admin-min.js': ['public/js/admin.js']
         }
       }
     },
@@ -68,9 +65,9 @@ module.exports = function(grunt) {
       combine: {
         files: [{
           expand: true,
-          cwd: 'src',
+          cwd: './',
           src: ['www/css/evdp.css'],
-          dest: 'release/admin',
+          dest: 'public',
           ext: '-min.css'
         }]
       }
@@ -79,55 +76,36 @@ module.exports = function(grunt) {
       release: {
         files: [{
           expand: true,
-          dot: true,
-          cwd: './',
-          src: ['**foreverignore'],
-          dest: 'release/'
-        },
-        {
-          expand: true,
-          cwd: 'src',
-          src: ['admin.js'],
-          dest: 'release/admin'
-        },
-        {
-          expand: true,
           cwd: 'bower_components/bloxui/dist/css/fonts',
           src: ['./**'],
-          dest: 'release/admin/www/css/fonts'
-        },
-        {
-          expand: true,
-          cwd: 'src',
-          src: ['index.js','honeybadger.js','data-select.js','config.json','selectors.json','lib/**'],
-          dest: 'release'
+          dest: 'public/css/fonts'
         }]
       }
     },
     watch: {
       server: {
-        files: ['src/*.js','src/*.json','src/lib/**/*.js'],
+        files: ['./*.js','./*.json','lib/**/*.js'],
         tasks: ['newer:copy'],
         options:{
           livereload: false
         }
       }, 
       js: {
-         files: ['src/www/js/**/*.js'],
+         files: ['www/js/**/*.js'],
          tasks: ['newer:concat','newer:uglify'],
          options: {
           livereload: true
          }
       },
       css: {
-         files: ['src/www/css/**/*.css'],
+         files: ['www/css/**/*.css'],
          tasks: ['newer:concat:css','newer:cssmin'],
          options: {
           livereload: true
          }
       },
       html: {
-         files: ['src/www/**/*.hbs'],
+         files: ['www/**/*.hbs'],
          tasks: ['newer:assemble'],
          options: {
           livereload: true
