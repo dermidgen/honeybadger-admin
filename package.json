@@ -39,7 +39,7 @@
     "honeybadger-etl": "git://github.com/dermidgen/honeybadger-etl.git",
     "honeybadger-service": "git://github.com/dermidgen/honeybadger-service.git",
     "nano": "^6.1.2",
-    "rets.js": "git://github.com/retsr/rets.js.git",
+    "rets.js": "git://github.com/dermidgen/rets.js.git#1e22a471fa7f2581e66a168a6438c6f43c34038d",
     "stream-transform": "0.0.7",
     "ws": "^0.7.1"
   },
