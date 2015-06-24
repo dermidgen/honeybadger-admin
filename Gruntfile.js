@@ -84,32 +84,32 @@ module.exports = function(grunt) {
     },
     watch: {
       server: {
-        files: ['./*.js','./*.json','lib/**/*.js'],
+        files: ['./*.js', './*.json', 'lib/**/*.js'],
         tasks: ['newer:copy'],
-        options:{
+        options: {
           livereload: false
         }
-      }, 
+      },
       js: {
-         files: ['www/js/**/*.js'],
-         tasks: ['newer:concat','newer:uglify'],
-         options: {
+        files: ['www/js/**/*.js'],
+        tasks: ['newer:concat', 'newer:uglify'],
+        options: {
           livereload: true
-         }
+        }
       },
       css: {
-         files: ['www/css/**/*.css'],
-         tasks: ['newer:concat:css','newer:cssmin'],
-         options: {
+        files: ['www/css/**/*.css'],
+        tasks: ['newer:concat:css', 'newer:cssmin'],
+        options: {
           livereload: true
-         }
+        }
       },
       html: {
-         files: ['www/**/*.hbs'],
-         tasks: ['newer:assemble'],
-         options: {
+        files: ['www/**/*.hbs'],
+        tasks: ['newer:assemble'],
+        options: {
           livereload: true
-         }
+        }
       }
     }
   });
@@ -120,11 +120,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-newer' );
+  grunt.loadNpmTasks('grunt-newer');
   grunt.loadNpmTasks('assemble');
 
   // Default task(s).
-  grunt.registerTask('default', ['copy','concat', 'newer:uglify', 'newer:cssmin','newer:assemble']);
-  grunt.registerTask('release', ['clean','copy','concat', 'uglify', 'cssmin','assemble']);
-  
+  grunt.registerTask('default', ['copy', 'concat', 'newer:uglify', 'newer:cssmin', 'newer:assemble']);
+  grunt.registerTask('release', ['clean', 'copy', 'concat', 'uglify', 'cssmin', 'assemble']);
+
 };
