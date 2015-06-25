@@ -15,18 +15,18 @@
 
     /**************** UI Bindings ***************/
     /**
-    		 * This HUGE block handles all of the setup and bindings
-    		 * For latching onto buttons, initializing the UI, etc.
-    		 * This is essentially our root DOM ready handler
-    		 *
-    		 * If you're wondering, "Where the fuck is the handler
-    		 * for this stupid button?"; or "How is this UI event
-    		 * getting handled?" - this is your spot.
-    		 *
-    		 * If you're looking for where data is rendered into the
-    		 * UI, where DOM getting manipulated or updated; look at
-    		 * view.js
-    		 */
+     * This HUGE block handles all of the setup and bindings
+     * For latching onto buttons, initializing the UI, etc.
+     * This is essentially our root DOM ready handler
+     *
+     * If you're wondering, "Where the fuck is the handler
+     * for this stupid button?"; or "How is this UI event
+     * getting handled?" - this is your spot.
+     *
+     * If you're looking for where data is rendered into the
+     * UI, where DOM getting manipulated or updated; look at
+     * view.js
+     */
 
     pages = {
       dashboard: $('#dashboard').hide(),
@@ -44,8 +44,8 @@
     });
 
     /**
-    		 * Handle keep any log windows down to the bottom
-    		 */
+     * Handle keep any log windows down to the bottom
+     */
     $('.logger').each(function(index, item) {
       item.addEventListener("DOMNodeInserted", function(e) {
         this.scrollTop = this.scrollHeight;
@@ -53,43 +53,43 @@
     });
 
     /**
-    		 * Detect when source modal is activated 
-    		 */
+     * Detect when source modal is activated
+     */
     $('#sourceEditor').on('show.bs.modal', function() {
       resetWizard('sourceEditor');
     });
 
     /**
-    		 * Detect when extractor modal is activated 
-    		 */
+     * Detect when extractor modal is activated
+     */
     $('#extractorWizard').on('show.bs.modal', function() {
       resetWizard('extractorWizard');
     });
 
     /**
-    		 * Detect when transformer modal is activated 
-    		 */
+     * Detect when transformer modal is activated
+     */
     $('#transformWizard').on('show.bs.modal', function() {
       resetWizard('transformWizard');
     });
 
     /**
-    		 * Detect when loader modal is activated 
-    		 */
+     * Detect when loader modal is activated
+     */
     $('#loaderWizard').on('show.bs.modal', function() {
       resetWizard('loaderWizard');
     });
 
     /**
-    		 * Detect when task modal is activated 
-    		 */
+     * Detect when task modal is activated
+     */
     $('#taskWizard').on('show.bs.modal', function() {
       resetWizard('taskWizard');
     });
 
     /**
-    		 * Reset our wizards
-    		 */
+     * Reset our wizards
+     */
     resetWizard('extractorWizard');
     resetWizard('transformWizard');
     resetWizard('loaderWizard');
@@ -97,12 +97,12 @@
     // $('.wizard section.step').first().show();
 
     /**
-    		 * Dialog Wizard navigation
-    		 * 
-    		 * This provides a generic mechanism for handling the
-    		 * prev/next/finish buttons and back & forth navigation
-    		 * of the Dialog wizards.
-    		 */
+     * Dialog Wizard navigation
+     *
+     * This provides a generic mechanism for handling the
+     * prev/next/finish buttons and back & forth navigation
+     * of the Dialog wizards.
+     */
     $('[am-Dialog]').each(function(index, item) {
       var _id = $(item).prop('id');
       $('[am-Button~=next]', item).click(function() {
@@ -126,7 +126,6 @@
       });
     });
 
-		
     $('[am-Button~=switch]').click(function() {
       var state = $(this).attr('data-state');
       state = (state !== 'on') ? 'on' : 'off';
@@ -150,8 +149,8 @@
     });
 
     /**
-    		 * From the source Wizard; display source options based on selected source type
-    		 */
+     * From the source Wizard; display source options based on selected source type
+     */
     $('#sourcetype').change(function() {
       sourceModalReset();
       if ($(this).val() == 'RETS') $('#source_RETS').show();
@@ -165,15 +164,15 @@
     /**************** Extractors ***************/
 
     /**
-    		 * Setup dialog button to be next vs save
-    		 */
+     * Setup dialog button to be next vs save
+     */
     $('#extractorWizard [am-Button~=finish]').hide();
 
     /**
-    		 * FTP Extractor Browse Button
-    		 * From the extractor Wizard; if selected source is FTP, bind to the browse button
-    		 * to find a target from the FTP source
-    		 */
+     * FTP Extractor Browse Button
+     * From the extractor Wizard; if selected source is FTP, bind to the browse button
+     * to find a target from the FTP source
+     */
     $('#ext-ftp-browse').click(function() {
       $DM.ftpBrowse($DM.getSource($('#ext-source-select').val()), $('#ftpRootPath').val(), function(e) {
         if (!e.err && e.body.success === true) {
@@ -192,10 +191,10 @@
     });
 
     /**
-    		 * From the extractor wizard:
-    		 * When selecting a data source for an extractor let's do some logic
-    		 * based on the type of source they've chosen
-    		 */
+     * From the extractor wizard:
+     * When selecting a data source for an extractor let's do some logic
+     * based on the type of source they've chosen
+     */
     $('#extractorWizard .source-options').hide();
     $('#ext-source-select').change(function() {
       var s = $DM.getSource($(this).val());
@@ -235,8 +234,8 @@
     });
 
     /**
-    		 * From the extractor wizard; for RETS sources, when a user selects a resource
-    		 */
+     * From the extractor wizard; for RETS sources, when a user selects a resource
+     */
     $('#ext-rets-resource').change(function() {
       var s = $DM.getSource($('#ext-source-select').val()).value;
       s.source.rets = { resource: $('#ext-rets-resource').val() };
@@ -253,8 +252,8 @@
     });
 
     /**
-    		 * From the extractor wizard; for RETS sources, when a user selects a class
-    		 */
+     * From the extractor wizard; for RETS sources, when a user selects a class
+     */
     $('#ext-rets-class').change(function() {
       var s = $DM.getSource($('#ext-source-select').val()).value;
       s.source.rets = {
@@ -278,16 +277,16 @@
     });
 
     /**
-    		 * From the extractor wizard: bindings for unarchive options
-    		 */
+     * From the extractor wizard: bindings for unarchive options
+     */
     $('#ext-unarchive').change(function() {
       if ($('#ext-unarchive')[0].checked) $('#ext-archive-opts').prop('disabled', false);
       else $('#ext-archive-opts').prop('disabled', true);
     });
 
     /**
-    		 * From the extractor wizard: Run the extractor test
-    		 */
+     * From the extractor wizard: Run the extractor test
+     */
     $('#ext-test').click(function() {
       $('#extraction-result').html('');
       $DM.extractor.sample(ext(), function(e) {
@@ -303,16 +302,16 @@
     });
 
     /**
-    		 * Clear the log window
-    		 */
+     * Clear the log window
+     */
     $('#ext-test-clear').click(function() {
       $('#extractor-log-body').html('');
       $('#extraction-result').html('');
     });
 
     /**
-    		 * Hook to the Dialog finish button
-    		 */
+     * Hook to the Dialog finish button
+     */
     $('#extractorWizard [am-Button~=finish]').click(function() {
       $('#extractorWizard').modal('hide');
       $DM.extractor.validate(ext());
@@ -326,23 +325,23 @@
 
 
     /**
-    		 * Setup dialog button to be next vs save
-    		 */
+     * Setup dialog button to be next vs save
+     */
     $('#transformWizard [am-Button~=finish]').hide();
 
     /**
-    		 * Input type selection for the transformer
-    		 * This should pretty much just be "bind to extractor" now
-    		 */
+     * Input type selection for the transformer
+     * This should pretty much just be "bind to extractor" now
+     */
     $('#trn-source-toggle').change(function() {
       if ($(this).val() !== 'custom') $('#trn-source-select').prop('disabled', false);
       else $('#trn-source-select').attr('disabled', 'disabled');
     });
 
     /**
-    		 * When a user selects an extractor to feed into the transformer let's load
-    		 * some metadata
-    		 */
+     * When a user selects an extractor to feed into the transformer let's load
+     * some metadata
+     */
     $('#trn-source-select').change(function() {
       var v = $(this).val();
       var s = $DM.getExtractors().filter(function(e) {
@@ -362,8 +361,8 @@
     $('#transformMapper').hide();
 
     /**
-    		 * When you choose a transformation type
-    		 */
+     * When you choose a transformation type
+     */
     $('#trn-transform-type').change(function() {
       if ($(this).val() == 'normalize') {
         $('#transformNormalize').show();
@@ -376,8 +375,8 @@
     });
 
     /**
-    		 * Bind to the transformer test button
-    		 */
+     * Bind to the transformer test button
+     */
     $('#trn-test').click(function() {
       $('#transformer-result').html('');
       $DM.transformer.sample(trn(), function(e) {
@@ -392,16 +391,16 @@
     });
 
     /**
-    		 * Reset tranform test log
-    		 */
+     * Reset tranform test log
+     */
     $('#trn-test-clear').click(function() {
       $('#transformer-log-body').html('');
       $('#transformer-result').html('');
     });
 
     /**
-    		 * Hook to the Dialog finish button
-    		 */
+     * Hook to the Dialog finish button
+     */
     $('#transformWizard [am-Button~=finish]').click(function() {
       $('#transformWizard').modal('hide');
       $DM.transformer.validate(trn());
@@ -414,13 +413,13 @@
 
 
     /**
-    		 * Setup dialog button to be next vs save
-    		 */
+     * Setup dialog button to be next vs save
+     */
     $('#loaderWizard [am-Button~=finish]').hide();
 
     /**
-    		 * When choosing a transformer to feed the loader
-    		 */
+     * When choosing a transformer to feed the loader
+     */
     $('#ldr-source-toggle').change(function() {
       if ($(this).val() !== 'custom') $('#ldr-source-select').removeAttr('disabled');
       else $('#ldr-source-select').attr('disabled', 'disabled');
@@ -429,8 +428,8 @@
     var trnSample = {};
 
     /**
-    		 * When choosing a transformer to feed the loader
-    		 */
+     * When choosing a transformer to feed the loader
+     */
     $('#ldr-source-select').change(function() {
       var v = $(this).val();
       var s = $DM.getTransformers().filter(function(e) {
@@ -452,8 +451,8 @@
     $('#loaderFTP').hide();
     $('#loaderFilesystem').hide();
     /**
-    		 * Bindings to validate the loader DSN, URI, whatever
-    		 */
+     * Bindings to validate the loader DSN, URI, whatever
+     */
     $('#loaderDSN button').click(function() {
       $DM.loader.validateConnection(ldr(), function(e) {
         var t = $('#ldr-target-type').val();
@@ -489,8 +488,8 @@
           $('#loaderSchemas').show();
 
           /**
-          					 * Bindings to the create schema button for MySQL loaders
-          					 */
+           * Bindings to the create schema button for MySQL loaders
+           */
           $('#ldr-create-schema').click(function() {
             $DM.loader.createSchema(ldr(), function(e) {
               $('#ldr-create-schema').removeClass('btn-danger btn-success').addClass('btn-primary');
@@ -518,7 +517,7 @@
         case "couchdb":
           $('.loader-options').hide();
           $('#ldr-couchdb-options').show();
-					
+          
           $('#loaderMySQL').hide();
           $('#loaderCouchDB').show();
           $('#loaderFTP').hide();
@@ -546,8 +545,8 @@
     });
 
     /**
-    		 * Binding for running loader tests
-    		 */
+     * Binding for running loader tests
+     */
     $('#ldr-test').click(function() {
       $('#loader-result').html('');
       $DM.loader.sample(ldr(), function(e) {
@@ -562,16 +561,16 @@
     });
 
     /**
-    		 * Clear the loader test log
-    		 */
+     * Clear the loader test log
+     */
     $('#ldr-test-clear').click(function() {
       $('#loader-log-body').html('');
       $('#loader-result').html('');
     });
 
     /**
-    		 * Hook to the Dialog finish button
-    		 */
+     * Hook to the Dialog finish button
+     */
     $('#loaderWizard [am-Button~=finish]').click(function() {
       $('#loaderWizard').modal('hide');
       $DM.loader.validate(ldr());
@@ -651,8 +650,8 @@
     });
 
     /**
-    		 * Binding for running task tests
-    		 */
+     * Binding for running task tests
+     */
     $('#task-test').click(function() {
       $('#task-result').html('');
       $DM.task.sample(tsk(), function(e) {
@@ -667,16 +666,16 @@
     });
 
     /**
-    		 * Clear the loader test log
-    		 */
+     * Clear the loader test log
+     */
     $('#task-test-clear').click(function() {
       $('#task-log-body').html('');
       $('#task-result').html('');
     });
 
     /**
-    		 * Binding to manually run the task
-    		 */
+     * Binding to manually run the task
+     */
     $('#task-run').click(function() {
       $('#task-log-body').html('');
       $('#task-result').html('');
@@ -697,8 +696,8 @@
     });
 
     /**
-    		 * Hook to the Dialog finish button
-    		 */
+     * Hook to the Dialog finish button
+     */
     $('#taskWizard [am-Button~=finish]').click(function() {
       $('#taskWizard').modal('hide');
       $DM.task.save(tsk());
@@ -710,9 +709,8 @@
     /****************  Complete Init  ***************/
 
     /**
-    		 * Finish init by navigating to a page
-    		 */
-    
+     * Finish init by navigating to a page
+     */
     if (document.location.hash) self.navigate(document.location.hash.replace('#', ''));
     else self.navigate('dashboard');
 
@@ -746,10 +744,10 @@
   };
 
   /**
-  	 * Reset the UI - All of it if you dare
-  	 * 
-  	 * @return {[type]} [description]
-  	 */
+   * Reset the UI - All of it if you dare
+   *
+   * @return {[type]} [description]
+   */
   this.reset = function() {
 
   };
@@ -764,8 +762,8 @@
   };
 
   /**
-  	 * Modal resets
-  	 */
+   * Modal resets
+   */
   this.sourceModalReset = function() {
     $('#validateBtn').removeAttr('disabled').removeClass('btn-danger btn-success').addClass('btn-primary');
     $('#sourceValidationStatus').removeClass('ok-sign exclamation-sign');
@@ -780,8 +778,8 @@
     $('input[type=text], input[type=password], select, textarea', '#' + id).val('');
 
     /**
-    		 * Reset the modal buttons
-    		 */
+     * Reset the modal buttons
+     */
     $('#' + id + ' section.step').hide().removeClass('active').first().show().addClass('active');
     $('#' + id + ' [am-Button~=prev]').show().prop('disabled', true);
     $('#' + id + ' [am-Button~=next]').show().prop('disabled', false);
@@ -792,11 +790,11 @@
   };
 
   /**
-  	 * Populate the proper wizard with saved data
-  	 * @param  {[type]} id
-  	 * @param  {[type]} data
-  	 * @return {[type]}
-  	 */
+   * Populate the proper wizard with saved data
+   * @param  {[type]} id
+   * @param  {[type]} data
+   * @return {[type]}
+   */
   this.setupWizard = function(id, data) {
     // ONLY EXECUTES ON EDIT NOT "NEW"
     // console.log(data);
@@ -832,7 +830,7 @@
           $('#source_FTP').show();
         }        else if (data.source.type == 'SOAP') $('#source_SOAP').show();
         else if (data.source.type == 'REST') $('#source_REST').show();
-        else if (data.source.type == 'XML') $('#source_XML').show();	
+        else if (data.source.type == 'XML') $('#source_XML').show();  
       break;
       case "extractorWizard":
 
@@ -844,20 +842,20 @@
         }
 
         /**
-        				 * Load Saved Extractor for Editing
-        				 */
-        
+         * Load Saved Extractor for Editing
+         */
+
         /**
-        				 * Populate the first page of the extractor dialog
-        				 */
+         * Populate the first page of the extractor dialog
+         */
         $('#extractorName').val(data.name);
         $('#ext-source-select').val(data.source);
         $('#ext-source-select').val(data.source);
         $('[name=ext-data-format]').val(data.target.format);
 
         /**
-        				 * Setup the wizard based on the source type
-        				 */
+         * Setup the wizard based on the source type
+         */
         var source = $DM.getSource(data.source).value.source;
         var type = source.type;
 
@@ -871,33 +869,32 @@
           $('.ext-rets-options').hide();
           $('#ext-rets-options').hide();
 
-					
           if (data.target.format === 'delimited-text') {
             $('#extractorWizard [name=ext-unarchive][value=' + data.target.options.unarchive + ']').prop('checked', true);
             $('#extractorWizard [name=ext-csv-delimiter][value=' + data.target.options.delimiter + ']').prop('checked', true);
             $('#extractorWizard [name=ext-csv-escape][value=' + data.target.options.escape + ']').prop('checked', true);
           }
-        }        else if (type === 'RETS') {
+        } else if (type === 'RETS') {
           $('#ext-ftp-options').hide();
           $('.ext-ftp-options').hide();
           $('.ext-rets-options').show();
           $('#ext-rets-options').show();
 
           /**
-          					 * We need to load the RETS metadata and re-select the saved options.
-          					 *
-          					 * Let's show the fields so that we can gracefully handle issues
-          					 * in the future (like and expired-non working value - if the MLS changes
-          					 * their class/resource names).
-          					 *
-          					 * TODO: add visual handler if one of the calls fails
-          					 */
+           * We need to load the RETS metadata and re-select the saved options.
+           *
+           * Let's show the fields so that we can gracefully handle issues
+           * in the future (like and expired-non working value - if the MLS changes
+           * their class/resource names).
+           *
+           * TODO: add visual handler if one of the calls fails
+           */
           $('#extractorWizard .rets-resource').removeClass('hide').show();
           $('#extractorWizard .rets-classification').removeClass('hide').show();
 
           /**
-          					 * We'll start with getting resources
-          					 */
+           * We'll start with getting resources
+           */
           $DM.retsExplore(data.source, function(e) {
             if (e.body.meta.METADATA) {
               $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
@@ -906,13 +903,13 @@
                 $('#ext-rets-options .rets-resource').removeClass('hide').show();
               });
               /**
-              							 * Set the value back to what the user had before
-              							 */
+               * Set the value back to what the user had before
+               */
               $('#ext-rets-resource').val(data.target.type);
 
               /**
-              							 * Fetch the various classes
-              							 */
+               * Fetch the various classes
+               */
               source.rets = { resource: data.target.type };
               $DM.retsBrowse({ source: source }, function(e) {
                 if (e.body.meta.METADATA) {
@@ -922,10 +919,10 @@
                     $('#ext-rets-options .rets-classification').removeClass('hide').show();
                   });
                   /**
-                  									 * Set the value back to what the user had before
-                  									 * This time - trigger the change so that our UI bindings
-                  									 * will auto-load the metadata fields to display on the next screen
-                  									 */
+                   * Set the value back to what the user had before
+                   * This time - trigger the change so that our UI bindings
+                   * will auto-load the metadata fields to display on the next screen
+                   */
                   $('#ext-rets-class').val(data.target.class).trigger('change');
                 }
               });
@@ -933,8 +930,8 @@
           });
 
           /**
-          					 * Reset the RETS query to what the user had before
-          					 */
+           * Reset the RETS query to what the user had before
+           */
           $('#ext-rets-query').val(data.target.res);
 
           if (data.target.options && data.target.options.mediaExtract == true) {
@@ -969,9 +966,9 @@
         $('#trn-source-toggle').val(data.style);
 
         /**
-        				 * Set the users selected extractor
-        				 * Also fire the change event so the metadata will load
-        				 */
+         * Set the users selected extractor
+         * Also fire the change event so the metadata will load
+         */
         $('#trn-source-select').prop('disabled', false).val(data.extractor).trigger('change');
 
         var extractor = $DM.getExtractor(data.extractor);
@@ -1002,11 +999,11 @@
           });
 
           // $('#transformNormalize .item input:text:enabled').each(function(index,item){
-          // 	transform.transform.input.push($('.name', $(item).parent().parent()).text());
-          // 	transform.transform.normalize.push({
-          // 		in: $('.name', $(item).parent().parent()).text(),
-          // 		out: $(item).val()
-          // 	});
+          //  transform.transform.input.push($('.name', $(item).parent().parent()).text());
+          //  transform.transform.normalize.push({
+          //    in: $('.name', $(item).parent().parent()).text(),
+          //    out: $(item).val()
+          //  });
           // });
 
 
@@ -1110,9 +1107,9 @@
   }
 
   /**
-  	 * Get an extractor definition from the UI
-  	 * @return {[type]}
-  	 */
+   * Get an extractor definition from the UI
+   * @return {[type]}
+   */
   var ext = function() {
     var stype = $DM.getSource($('#ext-source-select').val()).value.source.type;
 
@@ -1165,9 +1162,9 @@
   };
 
   /**
-  	 * Get an transformer definition from the UI
-  	 * @return {[type]}
-  	 */
+   * Get an transformer definition from the UI
+   * @return {[type]}
+   */
   var trn = function() {
     var transform = {
       name: $('#transformerName').val(),
@@ -1201,9 +1198,9 @@
   };
 
   /**
-  	 * Get a loader definition from the UI
-  	 * @return {[type]}
-  	 */
+   * Get a loader definition from the UI
+   * @return {[type]}
+   */
   var ldr = function() {
     var res = {
       name: $('#loaderName').val(),
@@ -1255,9 +1252,9 @@
   };
 
   /**
-  	 * Get a task definition from the UI
-  	 * @return {[type]}
-  	 */
+   * Get a task definition from the UI
+   * @return {[type]}
+   */
   var tsk = function() {
     var id = $('#taskWizard').attr('data-id');
     var _rev = $('#taskWizard').attr('data-rev');
@@ -1275,7 +1272,6 @@
       res._id = id;
       res._rev = _rev;
     }
-		
     return res;
   };
 
