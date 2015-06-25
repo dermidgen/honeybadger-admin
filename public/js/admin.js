@@ -15357,8 +15357,8 @@ var Admin = (function($this, $) {
       $DM.retsBrowse(s, function(e) {
         if (e.body.meta) {
           $('#ext-rets-class').html('<option>-- Select a data class --</option>')
-          $.each(e.body.meta.data, function(index, item) {
-            // console.log(item);
+          $.each(e.body.meta.METADATA[0]['METADATA-CLASS'][0].Class, function(index, item) {
+            console.log(item);
             $('#ext-rets-class').append('<option value="' + item.ClassName[0] + '">' + item.VisibleName[0] + ((item.StandardName[0]) ? ' : ' + item.StandardName[0] : '') + '</option>');
             $('#ext-rets-options .rets-classification').removeClass('hide').show();
           });
@@ -16013,9 +16013,9 @@ var Admin = (function($this, $) {
           					 * We'll start with getting resources
           					 */
           $DM.retsExplore(data.source, function(e) {
-            if (e.body.meta) {
+            if (e.body.meta.METADATA) {
               $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
-              $.each(e.body.meta.data, function(index, item) {
+              $.each(e.body.meta.METADATA[0]['METADATA-RESOURCE'].Resource, function(index, item) {
                 $('#ext-rets-resource').append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
                 $('#ext-rets-options .rets-resource').removeClass('hide').show();
               });
@@ -16029,9 +16029,9 @@ var Admin = (function($this, $) {
               							 */
               source.rets = { resource: data.target.type };
               $DM.retsBrowse({ source: source }, function(e) {
-                if (e.body.meta) {
+                if (e.body.meta.METADATA) {
                   $('#ext-rets-class').html('<option>-- Select a data class --</option>')
-                  $.each(e.body.meta.data, function(index, item) {
+                  $.each(e.body.meta.METADATA[0]['METADATA-CLASS'].Class, function(index, item) {
                     $('#ext-rets-class').append('<option value="' + item.ClassName[0] + '">' + item.VisibleName[0] + ((item.StandardName[0]) ? ' : ' + item.StandardName[0] : '') + '</option>');
                     $('#ext-rets-options .rets-classification').removeClass('hide').show();
                   });
