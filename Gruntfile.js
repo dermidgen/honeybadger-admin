@@ -83,13 +83,6 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-      server: {
-        files: ['./*.js', './*.json', 'lib/**/*.js'],
-        tasks: ['newer:copy'],
-        options: {
-          livereload: false
-        }
-      },
       js: {
         files: ['www/js/**/*.js'],
         tasks: ['newer:concat', 'newer:uglify'],
