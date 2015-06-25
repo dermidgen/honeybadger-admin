@@ -7,32 +7,32 @@ var Promise = function(wrappedFn, wrappedThis) {
     this.next = new Promise(wrappedFn, wrappedThis);
     return this.next;
   };
-    
+
   this.run = function() {
     wrappedFn.promise = this;
     wrappedFn.apply(wrappedThis);
   };
-    
+
   this.complete = function() {
     if (this.next) {
       this.next.run();
     }
   };
 };
- 
-Promise.create = function(func) { 
-  if (func.hasOwnProperty('promise')) { 
+
+Promise.create = function(func) {
+  if (func.hasOwnProperty('promise')) {
     return func.promise;
-  } else { 
+  } else {
     return new Promise();
-  } 
+  }
 };
 
 /**
  * This little guy might help organize things later
  * @param {object} context
  */
-var Emitter = function (context){
+var Emitter = function(context) {
 
   var _register = [];
   context.on = function(event, callback) {
@@ -40,7 +40,7 @@ var Emitter = function (context){
     //   if (i.event !== event && i.context !== context && i.callback !== callback) return i;
     // });
     // if (!s.length)
-    
+
     _register.push({
       event: event,
       context: context,
@@ -49,15 +49,15 @@ var Emitter = function (context){
 
   };
 
-  var _emit = function(event, data, context){
+  var _emit = function(event, data, context) {
     // console.log(_register)
-    for (var i=0; i<_register.length; i++) {
+    for (var i = 0; i < _register.length; i++) {
       if (_register[i].event === event && _register[i].context) _register[i].callback(data)
     }
   };
 
-  return function Emit(event, data){
-    _emit(event,data,context);
+  return function Emit(event, data) {
+    _emit(event, data, context);
   };
 };
 
@@ -74,123 +74,125 @@ var Modular = function(base, protected) {
   };
 
   this.init = function() {
-    for(var i = 0; i < __inits.length; i++) {
+    for (var i = 0; i < __inits.length; i++) {
       __inits[i]();
     }
   };
 
   this.register = function(module, init) {
-      if (typeof module.name == undefined || typeof module.instance == undefined) return;
-      if (typeof __modules[module.name] == undefined) __modules[module.name] = module.instance
-      if (init) init(_registerInitializer);
+    if (typeof module.name == undefined || typeof module.instance == undefined) return;
+    if (typeof __modules[module.name] == undefined) __modules[module.name] = module.instance
+    if (init) init(_registerInitializer);
   };
 };
 
 var Extend = function(base, ext) {
   var _base;
   var o = {};
-  for(var i in base) {
+  for (var i in base) {
     if (base.hasOwnProperty(i)) {
       var cb = base[i];
       if (typeof cb == Function) {
-        o[i] = function() { cb.apply(o,arguments); };
+        o[i] = function() { cb.apply(o, arguments); };
       } else {
         o[i] = base[i];
       }
     }
   }
-  for(var i in ext) {
+  for (var i in ext) {
     if (ext.hasOwnProperty(i)) {
       o[i] = ext[i];
     }
   }
   return o;
 };
-var HoneyBadger = (function($this){
 
-	var ts,tp,socket,host = "ws://"+location.host+"/admin/";
+var HoneyBadger = (function($this) {
 
-	var self = this;
-	var __cbqueue = {},
-		__logverbose = false,
-		__devmode = ( window.location.host.indexOf("localhost") > -1 || window.location.host.indexOf('192.168') > -1 ) ? true : false;
+  var ts,tp,socket,host = "ws://"+location.host+"/admin/";
 
-	var public = {}, protected = {};
-	var Emit = new Emitter(protected);
-	var Modules = new Modular(this, function(){ return Extend(public,protected); });
+  var self = this;
+  var __cbqueue = {},
+    __logverbose = false,
+    __devmode = ( window.location.host.indexOf("localhost") > -1 || window.location.host.indexOf('192.168') > -1 ) ? true : false;
 
-	console.log('HoneyBadger starting up');
-	var _init = function() {
-		console.log('HoneyBadger initializing');
-		
-		connect();
+  var public = {}, protected = {};
+  var Emit = new Emitter(protected);
+  var Modules = new Modular(this, function() { return Extend(public, protected); });
 
-		console.log('HoneyBadger initializing submodules');
-		Modules.init();
+  console.log('HoneyBadger starting up');
+  var _init = function() {
+    console.log('HoneyBadger initializing');
 
-		console.log('HoneyBadger initializing complete!');
-	};
+    connect();
 
-	var connect = function() {
-		if (ts) clearInterval(ts);
-		if (tp) clearInterval(tp);
+    console.log('HoneyBadger initializing submodules');
+    Modules.init();
 
-		socket = new WebSocket(host);
-		socket.onopen = function(){
-			if (ts) clearInterval(ts);
-			tp = setInterval(function(){
-				socket.send('ping');
-			}, 15000);
-			Emit('readyStateChange',1);
-		};
+    console.log('HoneyBadger initializing complete!');
+  };
 
-		socket.onclose = function(){
-			if (tp) clearInterval(tp);
-			ts = setInterval(connect, 1000);
-		};
+  var connect = function() {
+    if (ts) clearInterval(ts);
+    if (tp) clearInterval(tp);
 
-		socket.onmessage = receive;
-		return socket;
-	};
+    socket = new WebSocket(host);
+    socket.onopen = function() {
+      if (ts) clearInterval(ts);
+      tp = setInterval(function() {
+        socket.send('ping');
+      }, 15000);
+      Emit('readyStateChange', 1);
+    };
 
-	var send = function(method, args, callback){
-		var args = args || [];
-		var msig = (callback) ? (new Date().getTime() * Math.random(1000)).toString(36) : null;
-		if (msig) { __cbqueue[msig] = callback }
-		if( __devmode && __logverbose ){ console.trace(); console.dir({method:method,msig:msig,args:args}); }
-		socket.send(JSON.stringify({method:method,msig:msig,args:args}));
-	};
+    socket.onclose = function() {
+      if (tp) clearInterval(tp);
+      ts = setInterval(connect, 1000);
+    };
 
-	var receive = function(e) {
+    socket.onmessage = receive;
+    return socket;
+  };
 
-		if (e.data === 'pong') return;
-		if ( __devmode && __logverbose ){ console.dir(e); }
+  var send = function(method, args, callback){
+    var args = args || [];
+    var msig = (callback) ? (new Date().getTime() * Math.random(1000)).toString(36) : null;
+    if (msig) { __cbqueue[msig] = callback }
+    if( __devmode && __logverbose ){ console.trace(); console.dir({method:method,msig:msig,args:args}); }
+    socket.send(JSON.stringify({method:method,msig:msig,args:args}));
+  };
 
-		var d = JSON.parse(e.data);
-		var msig = d.msig || null;
-		if (msig && __cbqueue[msig]) {
-			__cbqueue[msig](d);
-			delete __cbqueue[msig];
-			return;
-		}
+  var receive = function(e) {
 
-		if (d.event == 'log-stream') {
-			Emit('log-stream',d);
-		}
-	};
+    if (e.data === 'pong') return;
+    if (__devmode && __logverbose) { console.dir(e); }
 
-	public.init = _init,
-	public.module = { register: Modules.register };
+    var d = JSON.parse(e.data);
+    var msig = d.msig || null;
+    if (msig && __cbqueue[msig]) {
+      __cbqueue[msig](d);
+      delete __cbqueue[msig];
+      return;
+    }
 
-	protected.__devmode = __devmode;
-	protected.__logverbose = __logverbose;
-	protected.exec = function(method, args, callback){
-		send(method, args, callback);
-	};
+    if (d.event == 'log-stream') {
+      Emit('log-stream', d);
+    }
+  };
 
-	return public;
+  public.init = _init,
+  public.module = { register: Modules.register };
 
-}(HoneyBadger||{}));
+  protected.__devmode = __devmode;
+  protected.__logverbose = __logverbose;
+  protected.exec = function(method, args, callback) {
+    send(method, args, callback);
+  };
+
+  return public;
+
+}(HoneyBadger || {}));
+
 +(function($this) {
   var self = this,
   sources = [],
@@ -217,7 +219,7 @@ var HoneyBadger = (function($this){
     name: 'DataManager',
     instance: this
   }, function(_unsealed) {
-    $this = _unsealed(_init); 
+    $this = _unsealed(_init);
     _construct();
   });
 
@@ -280,7 +282,7 @@ var HoneyBadger = (function($this){
   };
 
   this.refresh = function(callback) {
-    //TODO: add parallelized promises
+    // TODO: add parallelized promises
     this.loadSources().then(this.loadExtractors).then(this.loadTransformers).then(this.loadLoaders).then(this.loadTasks).then(function() {
       if (callback) callback();
       Emit('refresh', {
@@ -441,21 +443,21 @@ var HoneyBadger = (function($this){
 
 }(HoneyBadger || {}));
 
-+(function($this){
++(function($this) {
 
-	var $hb;
+  var $hb;
 
-	var __init = function(_unsealed) {
-		$hb = _unsealed;
-	};
+  var __init = function(_unsealed) {
+    $hb = _unsealed;
+  };
 
-	$this.source = function(id){
-		return {
-			create:function(){},
-			read:function(){},
-			update:function(){},
-			delete:function(){}
-		};
-	};
-	return $this;
-}(HoneyBadger||{}));
+  $this.source = function(id) {
+    return {
+      create: function() {},
+      read: function() {},
+      update: function() {},
+      delete: function() {}
+    };
+  };
+  return $this;
+}(HoneyBadger || {}));

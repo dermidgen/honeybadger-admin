@@ -24,7 +24,7 @@
     name: 'DataManager',
     instance: this
   }, function(_unsealed) {
-    $this = _unsealed(_init); 
+    $this = _unsealed(_init);
     _construct();
   });
 
@@ -87,7 +87,7 @@
   };
 
   this.refresh = function(callback) {
-    //TODO: add parallelized promises
+    // TODO: add parallelized promises
     this.loadSources().then(this.loadExtractors).then(this.loadTransformers).then(this.loadLoaders).then(this.loadTasks).then(function() {
       if (callback) callback();
       Emit('refresh', {
