@@ -16577,27 +16577,27 @@ var Admin = (function($this, $) {
       $('#sourceList > tbody').html('');
 
       /**
-      			 * Reset the list of sources in the extractor dialog
-      			 */
+       * Reset the list of sources in the extractor dialog
+       */
       var cval = $('#ext-source-select').val();
       $('#ext-source-select').html('<option value="">-- Select Source --</option>');
 
       $(data).each(function(index, item) {
 
         /**
-        				 * Add Source & Edit Dialog Hooks
-        				 * 
-        				 * Add the source to the sources page and setup
-        				 * a click handler for editing.
-        				 */
+         * Add Source & Edit Dialog Hooks
+         *
+         * Add the source to the sources page and setup
+         * a click handler for editing.
+         */
         $('#sourceList > tbody').append($('<tr><td>' + item.key + '</td><td>' + item.value.source.type + '</td><td>' + item.value.status + '</td></tr>').click(function() {
           $admin.UI.showWizard('sourceEditor');
           $admin.UI.setupWizard('sourceEditor', $DM.getSource(item.id).value);
         }));
 
         /**
-        				 * Add an option to the list of sources in the extractor dialog.
-        				 */
+         * Add an option to the list of sources in the extractor dialog.
+         */
         $('#ext-source-select').append('<option value="' + item.id + '">' + item.key + '</option>');
 
         if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>' + item.key + '</td><td>' + item.value.source.type + '</td><td>' + (new Date(item.value.date)).toDateString() + '</td></tr>');
@@ -16614,53 +16614,53 @@ var Admin = (function($this, $) {
       $('#extractorList > tbody').html('');
 
       /**
-      			 * Reset the list of extractors in the transform dialog
-      			 */
+       * Reset the list of extractors in the transform dialog
+       */
       var trn_val = $('#trn-source-select').val();
       $('#trn-source-select').html('<option value="">-- Select extractor --</option>');
 
       /**
-      			 * Reset the list of extractors in the task dialog
-      			 */
+       * Reset the list of extractors in the task dialog
+       */
       var task_val = $('#task-extractor-select').val();
       $('#task-extractor-select').html('<option value="">-- Select extractor --</option>');
 
       $(data).each(function(index, item) {
 
         /**
-        				 * Add Extractor & Edit Dialog Hooks
-        				 * 
-        				 * Add the extractor to the extractors page and setup
-        				 * a click handler for bringing up the edit dialog.
-        				 */
+         * Add Extractor & Edit Dialog Hooks
+         *
+         * Add the extractor to the extractors page and setup
+         * a click handler for bringing up the edit dialog.
+         */
         $('#extractorList > tbody').append($('<tr><td>' + item.key + '</td><td>' + item.value.target.res + '</td><td>' + item.value.status + '</td></tr>').click(function() {
           showWizard('extractorWizard');
           setupWizard('extractorWizard', item.value);
 
           $('#extractorWizard [am-Button~=next]').prop("disabled", false);
         }));
-				
+
         /**
-        				 * Add an option to the list of sources in the transform dialog.
-        				 */
+         * Add an option to the list of sources in the transform dialog.
+         */
         $('#trn-source-select').append('<option value="' + item.id + '">' + item.key + '</option>');
 
         /**
-        				 * Add an option to the list of sources in the transform dialog.
-        				 */
+         * Add an option to the list of sources in the transform dialog.
+         */
         $('#task-extractor-select').append('<option value="' + item.id + '">' + item.key + '</option>');
         // if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>');
         // else $('#inactiveSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>') ;
       });
 
       /**
-      			 * Reset the dialog value to whatever the previous selection was
-      			 */
+       * Reset the dialog value to whatever the previous selection was
+       */
       $('#trn-source-select').val(trn_val);
 
       /**
-      			 * Reset the dialog value to whatever the previous selection was
-      			 */
+       * Reset the dialog value to whatever the previous selection was
+       */
       $('#task-extractor-select').val(task_val);
     };
   };
@@ -16672,26 +16672,26 @@ var Admin = (function($this, $) {
       $('#transformerList > tbody').html('');
 
       /**
-      			 * Reset the list of extractors in the transform dialog
-      			 */
+       * Reset the list of extractors in the transform dialog
+       */
       var cval = $('#ldr-source-select').val();
       $('#ldr-source-select').html('<option value="">-- Select transformer --</option>');
 
       $(data).each(function(index, item) {
         var ext = $DM.getExtractor(item.value.extractor);
         $('#transformerList > tbody').append($('<tr><td>' + item.key + '</td><td>' + ext.key + '</td><td>' + item.value.transform.input.length + ' [ ' + item.value.transform.input.join(', ').substring(0, 100) + '... ]</td><td>' + item.value.status + '</td></tr>')
-					.click(function() {
+          .click(function() {
   showWizard('transformWizard');
   setupWizard('transformWizard', item.value);
-				}));
+        }));
         $('#ldr-source-select').append('<option value="' + item.id + '">' + item.key + '</option>');
         // if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>');
         // else $('#inactiveSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>') ;
       });
 
       /**
-      			 * Reset the dialog value to whatever the previous selection was
-      			 */
+       * Reset the dialog value to whatever the previous selection was
+       */
       $('#ldr-source-select').val(cval);
     };
   };
@@ -16741,19 +16741,19 @@ var Admin = (function($this, $) {
   this.transformDataStructures = function() {
 
     return function render(data) {
-      if (!data.headers && !data.data) return; 
+      if (!data.headers && !data.data) return;
       $('#transformNormalize').html('');
       $('#transformMapper .fields').html('');
       if (data.headers) {
         $.each(data.headers, function(index, item) {
           $('#transformNormalize').append('<label class="row item"><div class="col-md-6 form-inline"><label><input type="checkbox" checked/><span class="name">' + item + '</span></label></div><div class="col-md-6"><input type="text" class="form-control" value="' + item + '"/></div></label>')
           $('#transformMapper .fields').append('<span class="item badge">' + item + '</span> ');
-        });			
+        });
       } else if (data.data.data) {
         $.each(data.data.data[0], function(index, item) {
           $('#transformNormalize').append('<label class="row item"><div class="col-md-6 form-inline"><label><input type="checkbox" checked/><span class="name">' + index + '</span></label></div><div class="col-md-6"><input type="text" class="form-control" value="' + index + '"/></div></label>')
           $('#transformMapper .fields').append('<span class="item badge">' + index + '</span> ');
-        });			
+        });
       }
 
       $('#transformNormalize input:checkbox').change(function() {
