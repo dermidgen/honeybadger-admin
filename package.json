@@ -42,7 +42,7 @@
     "honeybadger-service": "git://github.com/dermidgen/honeybadger-service.git",
     "mysql": "^2.7.0",
     "nano": "^6.1.2",
-    "rets.js": "git://github.com/dermidgen/rets.js.git#1e22a471fa7f2581e66a168a6438c6f43c34038d",
+    "rets.js": "git://github.com/dermidgen/rets.js.git#stable",
     "stream-transform": "0.0.7",
     "ws": "^0.7.1"
   },
