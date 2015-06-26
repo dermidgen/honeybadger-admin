@@ -116,8 +116,8 @@
          * a click handler for bringing up the edit dialog.
          */
         $('#extractorList > tbody').append($('<tr><td>' + item.key + '</td><td>' + item.value.target.res + '</td><td>' + item.value.status + '</td></tr>').click(function() {
-          showWizard('extractorWizard');
-          setupWizard('extractorWizard', item.value);
+          $admin.UI.showWizard('extractorWizard');
+          $admin.UI.setupWizard('extractorWizard', item.value);
 
           $('#extractorWizard [am-Button~=next]').prop("disabled", false);
         }));
@@ -163,8 +163,8 @@
         var ext = $DM.getExtractor(item.value.extractor);
         $('#transformerList > tbody').append($('<tr><td>' + item.key + '</td><td>' + ext.key + '</td><td>' + item.value.transform.input.length + ' [ ' + item.value.transform.input.join(', ').substring(0, 100) + '... ]</td><td>' + item.value.status + '</td></tr>')
           .click(function() {
-  showWizard('transformWizard');
-  setupWizard('transformWizard', item.value);
+  $admin.UI.showWizard('transformWizard');
+  $admin.UI.setupWizard('transformWizard', item.value);
         }));
         $('#ldr-source-select').append('<option value="' + item.id + '">' + item.key + '</option>');
         // if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>');
@@ -185,18 +185,18 @@
       $(data).each(function(index, item) {
         if (item.value.target.type === 'mysql') {
           $('#loaderList > tbody').append($('<tr><td>' + item.key + '</td><td>' + item.value.target.dsn + '/' + item.value.target.schema.name + '</td><td>' + item.value.status + '</td></tr>').click(function() {
-            showWizard('loaderWizard');
-            setupWizard('loaderWizard', item.value);
+            $admin.UI.showWizard('loaderWizard');
+            $admin.UI.setupWizard('loaderWizard', item.value);
           }));
         }        else if (item.value.target.type === 'ftp') {
           $('#loaderList > tbody').append($('<tr><td>' + item.key + '</td><td>' + item.value.target.dsn + '</td><td>' + item.value.status + '</td></tr>').click(function() {
-            showWizard('loaderWizard');
-            setupWizard('loaderWizard', item.value);
+            $admin.UI.showWizard('loaderWizard');
+            $admin.UI.setupWizard('loaderWizard', item.value);
           }));
         }        else if (item.value.target.type === 'filesystem') {
           $('#loaderList > tbody').append($('<tr><td>' + item.key + '</td><td>' + item.value.target.path + '</td><td>' + item.value.status + '</td></tr>').click(function() {
-            showWizard('loaderWizard');
-            setupWizard('loaderWizard', item.value);
+            $admin.UI.showWizard('loaderWizard');
+            $admin.UI.setupWizard('loaderWizard', item.value);
           }));
         }
         // if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>');
@@ -211,8 +211,8 @@
       $('#taskList > tbody').html('');
       $(data).each(function(index, item) {
         $('#taskList > tbody').append($('<tr><td>' + item.key + '</td><td>' + item.value.description + '</td><td>' + item.value.status + '</td></tr>').click(function() {
-          showWizard('taskWizard');
-          setupWizard('taskWizard', item.value);
+          $admin.UI.showWizard('taskWizard');
+          $admin.UI.setupWizard('taskWizard', item.value);
         }));
         // if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>');
         // else $('#inactiveSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>') ;

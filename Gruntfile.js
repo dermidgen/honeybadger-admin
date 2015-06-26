@@ -29,7 +29,9 @@ module.exports = function(grunt) {
         src: [
           'bower_components/bloxui/dist/js/bloxui.js',
           'www/js/admin.js',
-          'www/js/admin/*.js'
+          'www/js/admin/*.js',
+          'www/js/views/*.js',
+          'www/js/controllers/*.js'
         ],
         dest: 'public/js/admin.js'
       },
