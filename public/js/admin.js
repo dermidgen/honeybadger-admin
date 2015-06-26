@@ -15918,134 +15918,10 @@ var Admin = (function($this, $) {
         self.Controllers.Extractor.ModalSetup(data);
       break;
       case "transformWizard":
-        $('#transformWizard').attr('data-id', data._id);
-        $('#transformWizard').attr('data-rev', data._rev);
-
-        if (data.status == 'disabled') {
-          $('#transformWizard .modal-header [am-Button~=switch].status').attr('data-state-value', 'disabled').attr('data-state', 'off').text('Disabled');
-        }
-
-        $('#transformerName').val(data.name);
-        $('#transformerDescription').val(data.description);
-        $('#trn-source-toggle').val(data.style);
-
-        /**
-         * Set the users selected extractor
-         * Also fire the change event so the metadata will load
-         */
-        $('#trn-source-select').prop('disabled', false).val(data.extractor).trigger('change');
-
-        var extractor = $DM.getExtractor(data.extractor);
-        if (!extractor) {
-          console.log('Invalid extractor, perhaps that extractor was deleted');
-          return;
-        }
-        $DM.extractor.sample(extractor.value, function(e) {
-          if (e.err) {
-            console.log('Error sampling the extractor', e);
-            return;
-          }
-
-          // console.log(e.body);
-
-          Admin.View.transformDataStructures()(e.body);
-          $('#trn-transform-type').val((data.transform.normalize.length)?'normalize':'normalize').trigger('change');
-
-          $('#transformNormalize input[type=checkbox]').prop('checked', false).trigger('change');
-
-          $(data.transform.normalize).each(function(index, item) {
-            var $out = $('input[value="' + item.in + '"');
-            var $row = $out.parent().parent();
-            $out.val(item.out);
-            $row.find('input[type=checkbox]').prop('checked', true).trigger('change');
-            // $row.find('input[type=checkbox]').prop('checked',true).trigger('change');
-            // console.log(item);
-          });
-
-          // $('#transformNormalize .item input:text:enabled').each(function(index,item){
-          //  transform.transform.input.push($('.name', $(item).parent().parent()).text());
-          //  transform.transform.normalize.push({
-          //    in: $('.name', $(item).parent().parent()).text(),
-          //    out: $(item).val()
-          //  });
-          // });
-
-
-        });
+        self.Controllers.Transform.ModalSetup(data);
       break;
       case "loaderWizard":
-        $('#loaderWizard').attr('data-id', data._id);
-        $('#loaderWizard').attr('data-rev', data._rev);
-
-        if (data.status == 'disabled') {
-          $('#loaderWizard .modal-header [am-Button~=switch].status').attr('data-state-value', 'disabled').attr('data-state', 'off').text('Disabled');
-        }
-
-        $('#loaderName').val(data.name);
-        $('#ldr-source-select').val(data.transform);
-        $('#ldr-target-type').val(data.target.type);
-
-        $('.loader-options').hide();
-        switch (data.target.type)
-        {
-          case "mysql":
-            $('#loaderSchemas').show();
-            $DM.transformer.sample($DM.getTransformer(data.transform).value, function(e) {
-              if (!e.err) {
-                Admin.View.loaderDefinition()(e.body);
-                // update('loaderDefinition',e.body);
-                trnSample = e.body;
-              } 
-            });
-            $DM.loader.validate(data, function(res) {
-              if (res.err) {
-                $('#loaderSchemas .create').show();
-                $('#loaderSchemas .fields').hide();
-              }
-
-              $('#loaderSchemas .create').hide();
-              $('#loaderSchemas .fields').show().find('p:first-child').hide();
-              $('#ldr-create-schema').hide();
-
-              $('#loaderSchemas input').prop('disabled', true);
-              $('#loaderSchemas select').prop('disabled', true);
-
-            });
-            $('#ldr-mysql-dsn').val(data.target.dsn);
-            $('#ldr-target-schema').val(data.target.schema.name);
-            $('#loaderMySQL').show();
-            $('#loaderCouchDB').hide();
-            $('#loaderFTP').hide();
-            $('#loaderFilesystem').hide();
-          break;
-          case "couchdb":
-            $('#ldr-couchdb-options').show();
-            $('#loaderMySQL').hide();
-            $('#loaderCouchDB').show();
-            $('#loaderFTP').hide();
-            $('#loaderFilesystem').hide();
-          break;
-          case "ftp":
-            $('#ldr-ftp-options').show();
-            $('#ldr-ftp-dsn').val(data.target.dsn);
-
-            $('#ldr-ftp-basepath').val(data.target.basepath);
-            $('#ldr-ftp-filename').val(data.target.filename);
-
-            $('#loaderMySQL').hide();
-            $('#loaderCouchDB').hide();
-            $('#loaderFTP').show();
-            $('#loaderFilesystem').hide();
-          break;
-          case "filesystem":
-            $('#ldr-filesystem-options').show();
-            $('#ldr-filesystem-dsn').val(data.target.dsn);
-            $('#loaderMySQL').hide();
-            $('#loaderCouchDB').hide();
-            $('#loaderFTP').hide();
-            $('#loaderFilesystem').show();
-          break;
-        }
+        self.Controllers.Loader.ModalSetup(data);
       break;
       case "taskWizard":
         $('#taskWizard').attr('data-id', data._id);
@@ -16639,8 +16515,167 @@ var Admin = (function($this, $) {
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
+      this.Bindings();
       console.log('Admin.Controllers.Extractor initialized');
     };
+
+  };
+
+  Extractor.prototype.Bindings = function() {
+    /**
+     * Setup dialog button to be next vs save
+     */
+    $('#extractorWizard [am-Button~=finish]').hide();
+
+    /**
+     * FTP Extractor Browse Button
+     * From the extractor Wizard; if selected source is FTP, bind to the browse button
+     * to find a target from the FTP source
+     */
+    $('#ext-ftp-browse').click(function() {
+      $DM.ftpBrowse($DM.getSource($('#ext-source-select').val()), $('#ftpRootPath').val(), function(e) {
+        if (!e.err && e.body.success === true) {
+          $('#ext-ftp-browser .files').empty();
+          e.body.list.forEach(function(item, index) {
+            if (item.name) $('#ext-ftp-browser .files').append($('<li class="file">' + item.name + '</li>').click(function() {
+              var path = ($('#ftpRootPath').val()) ? $('#ftpRootPath').val() + '/' + item.name : item.name;
+              $('#ftpFileName').val(path);
+              $('#ext-ftp-browser .files').empty();
+              // $('#extractorWizard [am-Button~=prev]').prop("disabled", false);
+              $('#extractorWizard [am-Button~=next]').prop("disabled", false);
+            }));
+          });
+        }
+      });
+    });
+
+    /**
+     * From the extractor wizard:
+     * When selecting a data source for an extractor let's do some logic
+     * based on the type of source they've chosen
+     */
+    $('#extractorWizard .source-options').hide();
+    $('#ext-source-select').change(function() {
+      var s = $DM.getSource($(this).val());
+
+      $('#ext-rets-options .rets-resource').hide();
+      $('#ext-rets-options .rets-classification').hide();
+      $('#extractorWizard .source-options').hide();
+
+      if (!s) return;
+      if (s.value.source.type === 'FTP') {
+        $('#ext-ftp-browser .files').empty();
+        $('#ftpRootPath').val('');
+        $('#ftpFileName').val('');
+        $('#ext-ftp-options').show();
+        $('#ext-rets-options').hide();
+        $('#ext-step-2 > .ext-ftp-options').show();
+        $('#ext-step-2 > .ext-rets-options').hide();
+      }      else if (s.value.source.type === 'RETS') {
+        $('#ext-ftp-options').hide();
+        $('#ext-rets-options').show();
+        $('#ext-step-2 > .ext-ftp-options').hide();
+        $('#ext-step-2 > .ext-rets-options').show();
+
+        s.value.source.rets = { resource: $('#ext-rets-resource').val() };
+        console.log(s);
+        // $DM.retsExplore(s.value, function(e) {
+        //   if (e.body.meta) {
+        //     $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
+        //     $.each(e.body.meta.data, function(index, item) {
+        //       // console.log(item);
+        //       $('#ext-rets-resource').append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
+        //       $('#ext-rets-options .rets-resource').removeClass('hide').show();
+        //     });
+        //   }
+        // });
+      }
+    });
+
+    /**
+     * From the extractor wizard; for RETS sources, when a user selects a resource
+     */
+    $('#ext-rets-resource').change(function() {
+      var s = $DM.getSource($('#ext-source-select').val()).value;
+      s.source.rets = { resource: $('#ext-rets-resource').val() };
+      console.log(s);
+      $DM.retsBrowse(s, function(e) {
+        if (e.body.meta) {
+          $('#ext-rets-class').html('<option>-- Select a data class --</option>')
+          $.each(e.body.meta.METADATA[0]['METADATA-CLASS'][0].Class, function(index, item) {
+            $('#ext-rets-class').append('<option value="' + item.ClassName[0] + '">' + item.VisibleName[0] + ((item.StandardName[0]) ? ' : ' + item.StandardName[0] : '') + '</option>');
+            $('#ext-rets-options .rets-classification').removeClass('hide').show();
+          });
+        }
+      });
+    });
+
+    /**
+     * From the extractor wizard; for RETS sources, when a user selects a class
+     */
+    $('#ext-rets-class').change(function() {
+      var s = $DM.getSource($('#ext-source-select').val()).value;
+      s.source.rets = {
+        resource: $('#ext-rets-resource').val(),
+        classification: $('#ext-rets-class').val()
+      };
+      $DM.retsInspect(s, function(e) {
+        $('#ext-step-2 > .ext-rets-options .fields').html('');
+        $.each(e.body.meta.data, function(index, item) {
+          // console.log(item);
+          $('#ext-step-2 > .ext-rets-options .fields').append('<div class="item"><strong>' + item.LongName[0] + '</strong> <em>' + index + '</em> <small>' + item.StandardName[0] + '</small> ' + ((item.Searchable[0] == '1') ? '<span class="badge">Searchable</span>' : '') + '<div class="detail"><small><em>' + item.DataType[0] + '</em> </small></div></div>');
+          // +item.ShortName[0]+' '+item.DBName[0]+' '
+        });
+        $('#extractorWizard [am-Button~=next]').prop("disabled", false);
+      });
+    });
+
+    $('#ext-rets-media-strategy').change(function() {
+      if ($(this).val() == 'MediaGetURL') $('#rets-media-query-options').show();
+      else $('#rets-media-query-options').hide();
+    });
+
+    /**
+     * From the extractor wizard: bindings for unarchive options
+     */
+    $('#ext-unarchive').change(function() {
+      if ($('#ext-unarchive')[0].checked) $('#ext-archive-opts').prop('disabled', false);
+      else $('#ext-archive-opts').prop('disabled', true);
+    });
+
+    /**
+     * From the extractor wizard: Run the extractor test
+     */
+    $('#ext-test').click(function() {
+      $('#extraction-result').html('');
+      $DM.extractor.sample(ext(), function(e) {
+        // console.log(e);
+        if (!e.err) {
+          $('#extraction-result').html('<p class="bg-success">Extractor Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
+          $('#extractorWizard [am-Button~=finish]').prop('disabled', false);
+        } else {
+          $('#extractorWizard [am-Button~=finish]').prop('disabled', true);
+          $('#extraction-result').html('<p class="bg-danger">Extractor Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
+        }
+      });
+    });
+
+    /**
+     * Clear the log window
+     */
+    $('#ext-test-clear').click(function() {
+      $('#extractor-log-body').html('');
+      $('#extraction-result').html('');
+    });
+
+    /**
+     * Hook to the Dialog finish button
+     */
+    $('#extractorWizard [am-Button~=finish]').click(function() {
+      $('#extractorWizard').modal('hide');
+      $DM.extractor.validate(ext());
+      $DM.extractor.save(ext(), function() { $DM.loadExtractors(); });
+    });
   };
 
   Extractor.prototype.ModalReset = function() {
@@ -16651,7 +16686,10 @@ var Admin = (function($this, $) {
     $('#extractorWizard').attr('data-rev', data._rev);
 
     if (data.status == 'disabled') {
-      $('#extractorWizard .modal-header [am-Button~=switch].status').attr('data-state-value', 'disabled').attr('data-state', 'off').text('Disabled');
+      $('#extractorWizard .modal-header [am-Button~=switch].status')
+      .attr('data-state-value', 'disabled')
+      .attr('data-state', 'off')
+      .text('Disabled');
     }
 
     /**
@@ -16683,9 +16721,12 @@ var Admin = (function($this, $) {
       $('#ext-rets-options').hide();
 
       if (data.target.format === 'delimited-text') {
-        $('#extractorWizard [name=ext-unarchive][value=' + data.target.options.unarchive + ']').prop('checked', true);
-        $('#extractorWizard [name=ext-csv-delimiter][value=' + data.target.options.delimiter + ']').prop('checked', true);
-        $('#extractorWizard [name=ext-csv-escape][value=' + data.target.options.escape + ']').prop('checked', true);
+        $('#extractorWizard [name=ext-unarchive][value=' + data.target.options.unarchive + ']')
+        .prop('checked', true);
+        $('#extractorWizard [name=ext-csv-delimiter][value=' + data.target.options.delimiter + ']')
+        .prop('checked', true);
+        $('#extractorWizard [name=ext-csv-escape][value=' + data.target.options.escape + ']')
+        .prop('checked', true);
       }
     } else if (type === 'RETS') {
       $('#ext-ftp-options').hide();
@@ -16712,7 +16753,8 @@ var Admin = (function($this, $) {
         if (e.body.meta.METADATA) {
           $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
           $.each(e.body.meta.METADATA[0]['METADATA-RESOURCE'].Resource, function(index, item) {
-            $('#ext-rets-resource').append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
+            $('#ext-rets-resource')
+            .append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
             $('#ext-rets-options .rets-resource').removeClass('hide').show();
           });
           /**
@@ -16773,6 +16815,139 @@ var Admin = (function($this, $) {
   }, function(_unsealed) {
     // Initialize module
     var module = new Extractor();
+    $admin = _unsealed(module._init); // fire constructor when DOM ready
+  });
+}(HoneyBadger.Admin, jQuery));
+
++(function($admin, $) {
+
+  var $DM;
+  var Loader = function() {
+    $admin.UI.Controllers.Loader = $this = this;
+    console.log('Admin.Controllers.Loader constructor');
+
+    this._init = function() {
+      $DM = $admin._parent.DataManager;
+      console.log('Admin.Controllers.Loader initialized');
+    };
+  };
+
+  Loader.prototype.ModalReset = function() {
+  };
+
+  Loader.prototype.ModalSetup = function(data) {
+    $('#loaderWizard').attr('data-id', data._id);
+    $('#loaderWizard').attr('data-rev', data._rev);
+
+    if (data.status == 'disabled') {
+      $('#loaderWizard .modal-header [am-Button~=switch].status')
+      .attr('data-state-value', 'disabled')
+      .attr('data-state', 'off')
+      .text('Disabled');
+    }
+
+    $('#loaderName').val(data.name);
+    $('#ldr-source-select').val(data.transform);
+    $('#ldr-target-type').val(data.target.type);
+
+    $('.loader-options').hide();
+    switch (data.target.type)
+    {
+      case "mysql":
+        $('#loaderSchemas').show();
+        $DM.transformer.sample($DM.getTransformer(data.transform).value, function(e) {
+          if (!e.err) {
+            Admin.View.loaderDefinition()(e.body);
+            // update('loaderDefinition',e.body);
+            trnSample = e.body;
+          }
+        });
+        $DM.loader.validate(data, function(res) {
+          if (res.err) {
+            $('#loaderSchemas .create').show();
+            $('#loaderSchemas .fields').hide();
+          }
+
+          $('#loaderSchemas .create').hide();
+          $('#loaderSchemas .fields').show().find('p:first-child').hide();
+          $('#ldr-create-schema').hide();
+
+          $('#loaderSchemas input').prop('disabled', true);
+          $('#loaderSchemas select').prop('disabled', true);
+
+        });
+        $('#ldr-mysql-dsn').val(data.target.dsn);
+        $('#ldr-target-schema').val(data.target.schema.name);
+        $('#loaderMySQL').show();
+        $('#loaderCouchDB').hide();
+        $('#loaderFTP').hide();
+        $('#loaderFilesystem').hide();
+      break;
+      case "couchdb":
+        $('#ldr-couchdb-options').show();
+        $('#loaderMySQL').hide();
+        $('#loaderCouchDB').show();
+        $('#loaderFTP').hide();
+        $('#loaderFilesystem').hide();
+      break;
+      case "ftp":
+        $('#ldr-ftp-options').show();
+        $('#ldr-ftp-dsn').val(data.target.dsn);
+
+        $('#ldr-ftp-basepath').val(data.target.basepath);
+        $('#ldr-ftp-filename').val(data.target.filename);
+
+        $('#loaderMySQL').hide();
+        $('#loaderCouchDB').hide();
+        $('#loaderFTP').show();
+        $('#loaderFilesystem').hide();
+      break;
+      case "filesystem":
+        $('#ldr-filesystem-options').show();
+        $('#ldr-filesystem-dsn').val(data.target.dsn);
+        $('#loaderMySQL').hide();
+        $('#loaderCouchDB').hide();
+        $('#loaderFTP').hide();
+        $('#loaderFilesystem').show();
+      break;
+    }
+  };
+
+  $admin.module.register({
+    name: 'Controllers.Loader',
+    instance: Loader
+  }, function(_unsealed) {
+    // Initialize module
+    var module = new Loader();
+    $admin = _unsealed(module._init); // fire constructor when DOM ready
+  });
+}(HoneyBadger.Admin, jQuery));
+
++(function($admin, $) {
+
+  var $DM;
+  var Solution = function() {
+    $admin.UI.Controllers.Solution = $this = this;
+    console.log('Admin.Controllers.Solution constructor');
+
+    this._init = function() {
+      $DM = $admin._parent.DataManager;
+      console.log('Admin.Controllers.Solution initialized');
+    };
+  };
+
+  Solution.prototype.ModalReset = function() {
+  };
+
+  Solution.prototype.ModalSetup = function(data) {
+  };
+
+  $admin.module.register({
+    name: 'Controllers.Solution',
+    instance: Solution
+  }, function(_unsealed) {
+    // Initialize module
+    var module = new Solution();
     $admin = _unsealed(module._init); // fire constructor when DOM ready
   });
 }(HoneyBadger.Admin, jQuery));
@@ -16841,6 +17016,131 @@ var Admin = (function($this, $) {
   }, function(_unsealed) {
     // Initialize module
     var module = new Source();
+    $admin = _unsealed(module._init); // fire constructor when DOM ready
+  });
+}(HoneyBadger.Admin, jQuery));
+
++(function($admin, $) {
+
+  var $DM;
+  var Task = function() {
+    $admin.UI.Controllers.Task = $this = this;
+    console.log('Admin.Controllers.Task constructor');
+
+    this._init = function() {
+      $DM = $admin._parent.DataManager;
+      console.log('Admin.Controllers.Task initialized');
+    };
+  };
+
+  Task.prototype.ModalReset = function() {
+  };
+
+  Task.prototype.ModalSetup = function(data) {
+    $('#taskWizard').attr('data-id', data._id);
+    $('#taskWizard').attr('data-rev', data._rev);
+
+    if (data.status == 'disabled') {
+      $('#taskWizard .modal-header [am-Button~=switch].status').attr('data-state-value', 'disabled').attr('data-state', 'off').text('Disabled');
+    }
+
+    $('#taskName').val(data.name);
+    $('#taskDescription').val(data.description);
+    $('#taskRepeat').val(data.repeat);
+    $('#taskRundate').val(data.runDate);
+    $('#taskRuntime').val(data.runTime);
+    $('#task-extractor-select').val(data.extractor).change();
+  };
+
+  $admin.module.register({
+    name: 'Controllers.Task',
+    instance: Task
+  }, function(_unsealed) {
+    // Initialize module
+    var module = new Task();
+    $admin = _unsealed(module._init); // fire constructor when DOM ready
+  });
+}(HoneyBadger.Admin, jQuery));
+
++(function($admin, $) {
+
+  var $DM;
+  var Transform = function() {
+    $admin.UI.Controllers.Transform = $this = this;
+    console.log('Admin.Controllers.Transform constructor');
+
+    this._init = function() {
+      $DM = $admin._parent.DataManager;
+      console.log('Admin.Controllers.Transform initialized');
+    };
+  };
+
+  Transform.prototype.ModalReset = function() {
+  };
+
+  Transform.prototype.ModalSetup = function(data) {
+    $('#transformWizard').attr('data-id', data._id);
+    $('#transformWizard').attr('data-rev', data._rev);
+
+    if (data.status == 'disabled') {
+      $('#transformWizard .modal-header [am-Button~=switch].status').attr('data-state-value', 'disabled').attr('data-state', 'off').text('Disabled');
+    }
+
+    $('#transformerName').val(data.name);
+    $('#transformerDescription').val(data.description);
+    $('#trn-source-toggle').val(data.style);
+
+    /**
+     * Set the users selected extractor
+     * Also fire the change event so the metadata will load
+     */
+    $('#trn-source-select').prop('disabled', false).val(data.extractor).trigger('change');
+
+    var extractor = $DM.getExtractor(data.extractor);
+    if (!extractor) {
+      console.log('Invalid extractor, perhaps that extractor was deleted');
+      return;
+    }
+    $DM.extractor.sample(extractor.value, function(e) {
+      if (e.err) {
+        console.log('Error sampling the extractor', e);
+        return;
+      }
+
+      // console.log(e.body);
+
+      Admin.View.transformDataStructures()(e.body);
+      $('#trn-transform-type').val((data.transform.normalize.length)?'normalize':'normalize').trigger('change');
+
+      $('#transformNormalize input[type=checkbox]').prop('checked', false).trigger('change');
+
+      $(data.transform.normalize).each(function(index, item) {
+        var $out = $('input[value="' + item.in + '"');
+        var $row = $out.parent().parent();
+        $out.val(item.out);
+        $row.find('input[type=checkbox]').prop('checked', true).trigger('change');
+        // $row.find('input[type=checkbox]').prop('checked',true).trigger('change');
+        // console.log(item);
+      });
+
+      // $('#transformNormalize .item input:text:enabled').each(function(index,item){
+      //  transform.transform.input.push($('.name', $(item).parent().parent()).text());
+      //  transform.transform.normalize.push({
+      //    in: $('.name', $(item).parent().parent()).text(),
+      //    out: $(item).val()
+      //  });
+      // });
+  
+
+    });
+  };
+
+  $admin.module.register({
+    name: 'Controllers.Transform',
+    instance: Transform
+  }, function(_unsealed) {
+    // Initialize module
+    var module = new Transform();
     $admin = _unsealed(module._init); // fire constructor when DOM ready
   });
 }(HoneyBadger.Admin, jQuery));

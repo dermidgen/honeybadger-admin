@@ -7,8 +7,167 @@
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
+      this.Bindings();
       console.log('Admin.Controllers.Extractor initialized');
     };
+
+  };
+
+  Extractor.prototype.Bindings = function() {
+    /**
+     * Setup dialog button to be next vs save
+     */
+    $('#extractorWizard [am-Button~=finish]').hide();
+
+    /**
+     * FTP Extractor Browse Button
+     * From the extractor Wizard; if selected source is FTP, bind to the browse button
+     * to find a target from the FTP source
+     */
+    $('#ext-ftp-browse').click(function() {
+      $DM.ftpBrowse($DM.getSource($('#ext-source-select').val()), $('#ftpRootPath').val(), function(e) {
+        if (!e.err && e.body.success === true) {
+          $('#ext-ftp-browser .files').empty();
+          e.body.list.forEach(function(item, index) {
+            if (item.name) $('#ext-ftp-browser .files').append($('<li class="file">' + item.name + '</li>').click(function() {
+              var path = ($('#ftpRootPath').val()) ? $('#ftpRootPath').val() + '/' + item.name : item.name;
+              $('#ftpFileName').val(path);
+              $('#ext-ftp-browser .files').empty();
+              // $('#extractorWizard [am-Button~=prev]').prop("disabled", false);
+              $('#extractorWizard [am-Button~=next]').prop("disabled", false);
+            }));
+          });
+        }
+      });
+    });
+
+    /**
+     * From the extractor wizard:
+     * When selecting a data source for an extractor let's do some logic
+     * based on the type of source they've chosen
+     */
+    $('#extractorWizard .source-options').hide();
+    $('#ext-source-select').change(function() {
+      var s = $DM.getSource($(this).val());
+
+      $('#ext-rets-options .rets-resource').hide();
+      $('#ext-rets-options .rets-classification').hide();
+      $('#extractorWizard .source-options').hide();
+
+      if (!s) return;
+      if (s.value.source.type === 'FTP') {
+        $('#ext-ftp-browser .files').empty();
+        $('#ftpRootPath').val('');
+        $('#ftpFileName').val('');
+        $('#ext-ftp-options').show();
+        $('#ext-rets-options').hide();
+        $('#ext-step-2 > .ext-ftp-options').show();
+        $('#ext-step-2 > .ext-rets-options').hide();
+      }      else if (s.value.source.type === 'RETS') {
+        $('#ext-ftp-options').hide();
+        $('#ext-rets-options').show();
+        $('#ext-step-2 > .ext-ftp-options').hide();
+        $('#ext-step-2 > .ext-rets-options').show();
+
+        s.value.source.rets = { resource: $('#ext-rets-resource').val() };
+        console.log(s);
+        // $DM.retsExplore(s.value, function(e) {
+        //   if (e.body.meta) {
+        //     $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
+        //     $.each(e.body.meta.data, function(index, item) {
+        //       // console.log(item);
+        //       $('#ext-rets-resource').append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
+        //       $('#ext-rets-options .rets-resource').removeClass('hide').show();
+        //     });
+        //   }
+        // });
+      }
+    });
+
+    /**
+     * From the extractor wizard; for RETS sources, when a user selects a resource
+     */
+    $('#ext-rets-resource').change(function() {
+      var s = $DM.getSource($('#ext-source-select').val()).value;
+      s.source.rets = { resource: $('#ext-rets-resource').val() };
+      console.log(s);
+      $DM.retsBrowse(s, function(e) {
+        if (e.body.meta) {
+          $('#ext-rets-class').html('<option>-- Select a data class --</option>')
+          $.each(e.body.meta.METADATA[0]['METADATA-CLASS'][0].Class, function(index, item) {
+            $('#ext-rets-class').append('<option value="' + item.ClassName[0] + '">' + item.VisibleName[0] + ((item.StandardName[0]) ? ' : ' + item.StandardName[0] : '') + '</option>');
+            $('#ext-rets-options .rets-classification').removeClass('hide').show();
+          });
+        }
+      });
+    });
+
+    /**
+     * From the extractor wizard; for RETS sources, when a user selects a class
+     */
+    $('#ext-rets-class').change(function() {
+      var s = $DM.getSource($('#ext-source-select').val()).value;
+      s.source.rets = {
+        resource: $('#ext-rets-resource').val(),
+        classification: $('#ext-rets-class').val()
+      };
+      $DM.retsInspect(s, function(e) {
+        $('#ext-step-2 > .ext-rets-options .fields').html('');
+        $.each(e.body.meta.data, function(index, item) {
+          // console.log(item);
+          $('#ext-step-2 > .ext-rets-options .fields').append('<div class="item"><strong>' + item.LongName[0] + '</strong> <em>' + index + '</em> <small>' + item.StandardName[0] + '</small> ' + ((item.Searchable[0] == '1') ? '<span class="badge">Searchable</span>' : '') + '<div class="detail"><small><em>' + item.DataType[0] + '</em> </small></div></div>');
+          // +item.ShortName[0]+' '+item.DBName[0]+' '
+        });
+        $('#extractorWizard [am-Button~=next]').prop("disabled", false);
+      });
+    });
+
+    $('#ext-rets-media-strategy').change(function() {
+      if ($(this).val() == 'MediaGetURL') $('#rets-media-query-options').show();
+      else $('#rets-media-query-options').hide();
+    });
+
+    /**
+     * From the extractor wizard: bindings for unarchive options
+     */
+    $('#ext-unarchive').change(function() {
+      if ($('#ext-unarchive')[0].checked) $('#ext-archive-opts').prop('disabled', false);
+      else $('#ext-archive-opts').prop('disabled', true);
+    });
+
+    /**
+     * From the extractor wizard: Run the extractor test
+     */
+    $('#ext-test').click(function() {
+      $('#extraction-result').html('');
+      $DM.extractor.sample(ext(), function(e) {
+        // console.log(e);
+        if (!e.err) {
+          $('#extraction-result').html('<p class="bg-success">Extractor Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
+          $('#extractorWizard [am-Button~=finish]').prop('disabled', false);
+        } else {
+          $('#extractorWizard [am-Button~=finish]').prop('disabled', true);
+          $('#extraction-result').html('<p class="bg-danger">Extractor Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
+        }
+      });
+    });
+
+    /**
+     * Clear the log window
+     */
+    $('#ext-test-clear').click(function() {
+      $('#extractor-log-body').html('');
+      $('#extraction-result').html('');
+    });
+
+    /**
+     * Hook to the Dialog finish button
+     */
+    $('#extractorWizard [am-Button~=finish]').click(function() {
+      $('#extractorWizard').modal('hide');
+      $DM.extractor.validate(ext());
+      $DM.extractor.save(ext(), function() { $DM.loadExtractors(); });
+    });
   };
 
   Extractor.prototype.ModalReset = function() {
@@ -19,7 +178,10 @@
     $('#extractorWizard').attr('data-rev', data._rev);
 
     if (data.status == 'disabled') {
-      $('#extractorWizard .modal-header [am-Button~=switch].status').attr('data-state-value', 'disabled').attr('data-state', 'off').text('Disabled');
+      $('#extractorWizard .modal-header [am-Button~=switch].status')
+      .attr('data-state-value', 'disabled')
+      .attr('data-state', 'off')
+      .text('Disabled');
     }
 
     /**
@@ -51,9 +213,12 @@
       $('#ext-rets-options').hide();
 
       if (data.target.format === 'delimited-text') {
-        $('#extractorWizard [name=ext-unarchive][value=' + data.target.options.unarchive + ']').prop('checked', true);
-        $('#extractorWizard [name=ext-csv-delimiter][value=' + data.target.options.delimiter + ']').prop('checked', true);
-        $('#extractorWizard [name=ext-csv-escape][value=' + data.target.options.escape + ']').prop('checked', true);
+        $('#extractorWizard [name=ext-unarchive][value=' + data.target.options.unarchive + ']')
+        .prop('checked', true);
+        $('#extractorWizard [name=ext-csv-delimiter][value=' + data.target.options.delimiter + ']')
+        .prop('checked', true);
+        $('#extractorWizard [name=ext-csv-escape][value=' + data.target.options.escape + ']')
+        .prop('checked', true);
       }
     } else if (type === 'RETS') {
       $('#ext-ftp-options').hide();
@@ -80,7 +245,8 @@
         if (e.body.meta.METADATA) {
           $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
           $.each(e.body.meta.METADATA[0]['METADATA-RESOURCE'].Resource, function(index, item) {
-            $('#ext-rets-resource').append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
+            $('#ext-rets-resource')
+            .append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
             $('#ext-rets-options .rets-resource').removeClass('hide').show();
           });
           /**
