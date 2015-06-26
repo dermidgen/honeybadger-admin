@@ -15248,580 +15248,6 @@ var Admin = (function($this, $) {
       $(this).attr('data-state', state).attr('data-state-value', value).text(label);
     });
 
-
-    /**************** UI Bindings ***************/
-    /**************** Sources ***************/
-
-    $('#validateBtn').click(function() {
-      Admin.Validator.source.validate();
-    });
-
-    $('#sourceEditor [am-Button~=prev]').hide();
-    $('#sourceEditor [am-Button~=next]').hide();
-    $('#sourceEditor [am-Button~=finish]').click(function() {
-      Admin.Validator.source.save();
-    });
-
-    /**
-     * From the source Wizard; display source options based on selected source type
-     */
-    $('#sourcetype').change(function() {
-      self.Controllers.Source.ModalReset();
-      if ($(this).val() == 'RETS') $('#source_RETS').show();
-      else if ($(this).val() == 'FTP') $('#source_FTP').show();
-      else if ($(this).val() == 'SOAP') $('#source_SOAP').show();
-      else if ($(this).val() == 'REST') $('#source_REST').show();
-      else if ($(this).val() == 'XML') $('#source_XML').show();
-    }).change();
-
-    /**************** UI Bindings ***************/
-    /**************** Extractors ***************/
-
-    /**
-     * Setup dialog button to be next vs save
-     */
-    $('#extractorWizard [am-Button~=finish]').hide();
-
-    /**
-     * FTP Extractor Browse Button
-     * From the extractor Wizard; if selected source is FTP, bind to the browse button
-     * to find a target from the FTP source
-     */
-    $('#ext-ftp-browse').click(function() {
-      $DM.ftpBrowse($DM.getSource($('#ext-source-select').val()), $('#ftpRootPath').val(), function(e) {
-        if (!e.err && e.body.success === true) {
-          $('#ext-ftp-browser .files').empty();
-          e.body.list.forEach(function(item, index) {
-            if (item.name) $('#ext-ftp-browser .files').append($('<li class="file">' + item.name + '</li>').click(function() {
-              var path = ($('#ftpRootPath').val()) ? $('#ftpRootPath').val() + '/' + item.name : item.name;
-              $('#ftpFileName').val(path);
-              $('#ext-ftp-browser .files').empty();
-              // $('#extractorWizard [am-Button~=prev]').prop("disabled", false);
-              $('#extractorWizard [am-Button~=next]').prop("disabled", false);
-            }));
-          });
-        }
-      });
-    });
-
-    /**
-     * From the extractor wizard:
-     * When selecting a data source for an extractor let's do some logic
-     * based on the type of source they've chosen
-     */
-    $('#extractorWizard .source-options').hide();
-    $('#ext-source-select').change(function() {
-      var s = $DM.getSource($(this).val());
-
-      $('#ext-rets-options .rets-resource').hide();
-      $('#ext-rets-options .rets-classification').hide();
-      $('#extractorWizard .source-options').hide();
-
-      if (!s) return;
-      if (s.value.source.type === 'FTP') {
-        $('#ext-ftp-browser .files').empty();
-        $('#ftpRootPath').val('');
-        $('#ftpFileName').val('');
-        $('#ext-ftp-options').show();
-        $('#ext-rets-options').hide();
-        $('#ext-step-2 > .ext-ftp-options').show();
-        $('#ext-step-2 > .ext-rets-options').hide();
-      }      else if (s.value.source.type === 'RETS') {
-        $('#ext-ftp-options').hide();
-        $('#ext-rets-options').show();
-        $('#ext-step-2 > .ext-ftp-options').hide();
-        $('#ext-step-2 > .ext-rets-options').show();
-
-        s.value.source.rets = { resource: $('#ext-rets-resource').val() };
-        console.log(s);
-        // $DM.retsExplore(s.value, function(e) {
-        //   if (e.body.meta) {
-        //     $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
-        //     $.each(e.body.meta.data, function(index, item) {
-        //       // console.log(item);
-        //       $('#ext-rets-resource').append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
-        //       $('#ext-rets-options .rets-resource').removeClass('hide').show();
-        //     });
-        //   }
-        // });
-      }
-    });
-
-    /**
-     * From the extractor wizard; for RETS sources, when a user selects a resource
-     */
-    $('#ext-rets-resource').change(function() {
-      var s = $DM.getSource($('#ext-source-select').val()).value;
-      s.source.rets = { resource: $('#ext-rets-resource').val() };
-      console.log(s);
-      $DM.retsBrowse(s, function(e) {
-        if (e.body.meta) {
-          $('#ext-rets-class').html('<option>-- Select a data class --</option>')
-          $.each(e.body.meta.METADATA[0]['METADATA-CLASS'][0].Class, function(index, item) {
-            $('#ext-rets-class').append('<option value="' + item.ClassName[0] + '">' + item.VisibleName[0] + ((item.StandardName[0]) ? ' : ' + item.StandardName[0] : '') + '</option>');
-            $('#ext-rets-options .rets-classification').removeClass('hide').show();
-          });
-        }
-      });
-    });
-
-    /**
-     * From the extractor wizard; for RETS sources, when a user selects a class
-     */
-    $('#ext-rets-class').change(function() {
-      var s = $DM.getSource($('#ext-source-select').val()).value;
-      s.source.rets = {
-        resource: $('#ext-rets-resource').val(),
-        classification: $('#ext-rets-class').val()
-      };
-      $DM.retsInspect(s, function(e) {
-        $('#ext-step-2 > .ext-rets-options .fields').html('');
-        $.each(e.body.meta.data, function(index, item) {
-          // console.log(item);
-          $('#ext-step-2 > .ext-rets-options .fields').append('<div class="item"><strong>' + item.LongName[0] + '</strong> <em>' + index + '</em> <small>' + item.StandardName[0] + '</small> ' + ((item.Searchable[0] == '1') ? '<span class="badge">Searchable</span>' : '') + '<div class="detail"><small><em>' + item.DataType[0] + '</em> </small></div></div>');
-          // +item.ShortName[0]+' '+item.DBName[0]+' '
-        });
-        $('#extractorWizard [am-Button~=next]').prop("disabled", false);
-      });
-    });
-
-    $('#ext-rets-media-strategy').change(function() {
-      if ($(this).val() == 'MediaGetURL') $('#rets-media-query-options').show();
-      else $('#rets-media-query-options').hide();
-    });
-
-    /**
-     * From the extractor wizard: bindings for unarchive options
-     */
-    $('#ext-unarchive').change(function() {
-      if ($('#ext-unarchive')[0].checked) $('#ext-archive-opts').prop('disabled', false);
-      else $('#ext-archive-opts').prop('disabled', true);
-    });
-
-    /**
-     * From the extractor wizard: Run the extractor test
-     */
-    $('#ext-test').click(function() {
-      $('#extraction-result').html('');
-      $DM.extractor.sample(ext(), function(e) {
-        // console.log(e);
-        if (!e.err) {
-          $('#extraction-result').html('<p class="bg-success">Extractor Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
-          $('#extractorWizard [am-Button~=finish]').prop('disabled', false);
-        } else {
-          $('#extractorWizard [am-Button~=finish]').prop('disabled', true);
-          $('#extraction-result').html('<p class="bg-danger">Extractor Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
-        }
-      });
-    });
-
-    /**
-     * Clear the log window
-     */
-    $('#ext-test-clear').click(function() {
-      $('#extractor-log-body').html('');
-      $('#extraction-result').html('');
-    });
-
-    /**
-     * Hook to the Dialog finish button
-     */
-    $('#extractorWizard [am-Button~=finish]').click(function() {
-      $('#extractorWizard').modal('hide');
-      $DM.extractor.validate(ext());
-      $DM.extractor.save(ext(), function() { $DM.loadExtractors(); });
-    });
-
-
-
-    /**************** UI Bindings ***************/
-    /**************** Transformer ***************/
-
-
-    /**
-     * Setup dialog button to be next vs save
-     */
-    $('#transformWizard [am-Button~=finish]').hide();
-
-    /**
-     * Input type selection for the transformer
-     * This should pretty much just be "bind to extractor" now
-     */
-    $('#trn-source-toggle').change(function() {
-      if ($(this).val() !== 'custom') $('#trn-source-select').prop('disabled', false);
-      else $('#trn-source-select').attr('disabled', 'disabled');
-    });
-
-    /**
-     * When a user selects an extractor to feed into the transformer let's load
-     * some metadata
-     */
-    $('#trn-source-select').change(function() {
-      var v = $(this).val();
-      var s = $DM.getExtractors().filter(function(e) {
-        if (e.id == v) return e;
-        else return null;
-      }).pop();
-      if (!s) return;
-      $DM.extractor.sample(s.value, function(e) {
-        if (!e.err) {
-          Admin.View.transformDataStructures()(e.body);
-          $('#transformWizard [am-Button~=next]').prop('disabled', false);
-        }
-      });
-    });
-
-    $('#transformNormalize').hide();
-    $('#transformMapper').hide();
-
-    /**
-     * When you choose a transformation type
-     */
-    $('#trn-transform-type').change(function() {
-      if ($(this).val() == 'normalize') {
-        $('#transformNormalize').show();
-        $('#transformMapper').hide();
-      }
-      if ($(this).val() == 'map') {
-        $('#transformNormalize').hide();
-        $('#transformMapper').show();
-      }
-    });
-
-    /**
-     * Bind to the transformer test button
-     */
-    $('#trn-test').click(function() {
-      $('#transformer-result').html('');
-      $DM.transformer.sample(trn(), function(e) {
-        if (!e.err) {
-          $('#transformer-result').html('<p class="bg-success">Transform Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
-          $('#transformWizard [am-Button~=finish]').prop('disabled', false);
-        } else {
-          $('#transformer-result').html('<p class="bg-danger">Transform Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
-          $('#transformWizard [am-Button~=finish]').prop('disabled', true);
-        }
-      });
-    });
-
-    /**
-     * Reset tranform test log
-     */
-    $('#trn-test-clear').click(function() {
-      $('#transformer-log-body').html('');
-      $('#transformer-result').html('');
-    });
-
-    /**
-     * Hook to the Dialog finish button
-     */
-    $('#transformWizard [am-Button~=finish]').click(function() {
-      $('#transformWizard').modal('hide');
-      $DM.transformer.validate(trn());
-      $DM.transformer.save(trn(), function() { $DM.loadTransformers(); });
-    });
-
-
-    /**************** UI Bindings ***************/
-    /****************  Loaders  ***************/
-
-
-    /**
-     * Setup dialog button to be next vs save
-     */
-    $('#loaderWizard [am-Button~=finish]').hide();
-
-    /**
-     * When choosing a transformer to feed the loader
-     */
-    $('#ldr-source-toggle').change(function() {
-      if ($(this).val() !== 'custom') $('#ldr-source-select').removeAttr('disabled');
-      else $('#ldr-source-select').attr('disabled', 'disabled');
-    });
-
-    var trnSample = {};
-
-    /**
-     * When choosing a transformer to feed the loader
-     */
-    $('#ldr-source-select').change(function() {
-      var v = $(this).val();
-      var s = $DM.getTransformers().filter(function(e) {
-        if (e.id == v) return e;
-        else return null;
-      }).pop();
-
-      $DM.transformer.sample(s.value, function(e) {
-        if (!e.err) {
-          Admin.View.loaderDefinition()(e.body);
-          // update('loaderDefinition',e.body);
-          trnSample = e.body;
-        } 
-      });
-    });
-
-    $('#loaderMySQL').hide();
-    $('#loaderCouchDB').hide();
-    $('#loaderFTP').hide();
-    $('#loaderFilesystem').hide();
-    /**
-     * Bindings to validate the loader DSN, URI, whatever
-     */
-    $('#loaderDSN button').click(function() {
-      $DM.loader.validateConnection(ldr(), function(e) {
-        var t = $('#ldr-target-type').val();
-        var btn = $('#ldr-' + t + '-validate');
-        switch (t) {
-          case "mysql":
-          break;
-          case "couchdb":
-          break;
-          case "ftp":
-          break;
-          case "filesystem":
-          break;
-        }
-        $(btn).removeClass('btn-danger btn-success').addClass('btn-primary');
-        if (!e.err) {
-          $(btn).removeClass('btn-primary').addClass('btn-success');
-          $('.validation-status', btn).removeClass('asterisk').addClass('ok-sign');
-          $('#loaderWizard [am-Button~=next]').prop('disabled', false);
-        } else {
-          $(btn).prop('disabled', false).removeClass('btn-primary').addClass('btn-danger');
-          $('.validation-status', btn).removeClass('asterisk').addClass('exclamation-sign');
-        }
-
-      });
-    });
-
-    $('#ldr-target-type').change(function() {
-      switch ($(this).val())
-      {
-        case "mysql":
-          $('.loader-options').hide();
-          $('#loaderSchemas').show();
-
-          /**
-           * Bindings to the create schema button for MySQL loaders
-           */
-          $('#ldr-create-schema').click(function() {
-            $DM.loader.createSchema(ldr(), function(e) {
-              $('#ldr-create-schema').removeClass('btn-danger btn-success').addClass('btn-primary');
-              if (!e.err) {
-                $('#ldr-create-schema').removeClass('btn-primary').addClass('btn-success')
-                $('#ldr-create-schema .schema-status').removeClass('asterisk').addClass('ok-sign');
-              } else {
-                $('#ldr-create-schema').prop('disabled', false).removeClass('btn-primary').addClass('btn-danger')
-                $('#ldr-create-schema .schema-status').removeClass('asterisk').addClass('exclamation-sign');
-              }
-
-            });
-          });
-
-          $('#loaderSchemas .fields').hide();
-          $('#ldr-new-schema').click(function() {
-            $('#loaderSchemas .create').hide();
-            $('#loaderSchemas .fields').show();
-          });
-          $('#loaderMySQL').show();
-          $('#loaderCouchDB').hide();
-          $('#loaderFTP').hide();
-          $('#loaderFilesystem').hide();
-        break;
-        case "couchdb":
-          $('.loader-options').hide();
-          $('#ldr-couchdb-options').show();
-          
-          $('#loaderMySQL').hide();
-          $('#loaderCouchDB').show();
-          $('#loaderFTP').hide();
-          $('#loaderFilesystem').hide();
-        break;
-        case "ftp":
-          $('.loader-options').hide();
-          $('#ldr-ftp-options').show();
-
-          $('#loaderMySQL').hide();
-          $('#loaderCouchDB').hide();
-          $('#loaderFTP').show();
-          $('#loaderFilesystem').hide();
-        break;
-        case "filesystem":
-          $('.loader-options').hide();
-          $('#ldr-filesystem-options').show();
-
-          $('#loaderMySQL').hide();
-          $('#loaderCouchDB').hide();
-          $('#loaderFTP').hide();
-          $('#loaderFilesystem').show();
-        break;
-      }
-    });
-
-    /**
-     * Binding for running loader tests
-     */
-    $('#ldr-test').click(function() {
-      $('#loader-result').html('');
-      $DM.loader.sample(ldr(), function(e) {
-        if (!e.err) {
-          $('#loader-result').html('<p class="bg-success">Loader Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
-          $('#loaderWizard [am-Button~=finish]').prop('disabled', false);
-        } else {
-          $('#loader-result').html('<p class="bg-danger">Loader Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
-          $('#loaderWizard [am-Button~=finish]').prop('disabled', true);
-        }
-      });
-    });
-
-    /**
-     * Clear the loader test log
-     */
-    $('#ldr-test-clear').click(function() {
-      $('#loader-log-body').html('');
-      $('#loader-result').html('');
-    });
-
-    /**
-     * Hook to the Dialog finish button
-     */
-    $('#loaderWizard [am-Button~=finish]').click(function() {
-      $('#loaderWizard').modal('hide');
-      $DM.loader.validate(ldr());
-      $DM.loader.save(ldr());
-    });
-
-
-    /**************** UI Bindings ***************/
-    /****************  Tasks  ***************/
-
-    $('#taskRepeat').change(function() {
-      var _repeat = $(this).val();
-      switch (_repeat)
-      {
-        case 'daily':
-          $('#taskRepeatOptions').hide();
-        break;
-        case 'weekly':
-          $('.repeatOptions').hide();
-          $('#taskRepeatWeeklyOptions').show();
-          $('#taskRepeatOptions').show();
-        break;
-        case 'monthly':
-          $('.repeatOptions').hide();
-          $('#taskRepeatMonthlyOptions').show();
-          $('#taskRepeatOptions').show();
-        break;
-        case 'periodically':
-          $('.repeatOptions').hide();
-          $('#taskRepeatPeriodicOptions').show();
-          $('#taskRepeatOptions').show();
-        break;
-        default:
-          $('#taskRepeatOptions').hide();
-      }
-    });
-
-    $('#taskRepeatOptions').hide();
-
-    $('#task-extractor-select').change(function() {
-
-      var _ext = $(this).val();
-      if (!_ext) return;
-
-      var extractor = $DM.getExtractor(_ext);
-      var source = $DM.getSource(extractor.value.source);
-
-      var transformers = $DM.getTransformers();
-      var loaders = $DM.getLoaders();
-
-      var _trn = [];
-      var _ldr = [];
-
-      $('#taskETLMap > ul').html('');
-      $('#taskTransformers').html('');
-      $('#taskLoaders').html('');
-
-      $("#taskETLMap .sources").append('<li class="source"><div class="title">' + source.key + '</div></li>');
-      $("#taskETLMap .extractors").append('<li class="extractor"><div class="title">' + extractor.key + '</div></li>');
-
-      $(transformers).each(function(index, item) {
-        if (item.value.extractor == _ext) {
-          $('#taskTransformers').append('<li>' + item.key + '</li>');
-          $("#taskETLMap .transformers").append('<li class="transformer" data-id="' + item.id + '"><div class="title">' + item.key + '</div></li>');
-          _trn.push(item.id);
-        }
-      });
-
-      $(loaders).each(function(index, item) {
-        if (_trn.indexOf(item.value.transform) > -1) {
-          $('#taskLoaders').append('<li>' + item.key + '</li>');
-          $("#taskETLMap [data-id=" + item.value.transform + "]").append('<li class="loader" data-rel="' + item.value.transform + '" data-id="' + item.id + '"><div class="title">' + item.key + '</div></li>');
-          _ldr.push(item.id);
-        }
-      });
-
-    });
-
-    /**
-     * Binding for running task tests
-     */
-    $('#task-test').click(function() {
-      $('#task-result').html('');
-      $DM.task.sample(tsk(), function(e) {
-        if (!e.err) {
-          $('#task-result').html('<p class="bg-success">Task Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
-          $('#taskWizard [am-Button~=finish]').prop('disabled', false);
-        } else {
-          $('#task-result').html('<p class="bg-danger">Task Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
-          $('#taskWizard [am-Button~=finish]').prop('disabled', true);
-        }
-      });
-    });
-
-    /**
-     * Clear the loader test log
-     */
-    $('#task-test-clear').click(function() {
-      $('#task-log-body').html('');
-      $('#task-result').html('');
-    });
-
-    /**
-     * Binding to manually run the task
-     */
-    $('#task-run').click(function() {
-      $('#task-log-body').html('');
-      $('#task-result').html('');
-
-      $('#task-log-body').html('<p class="text-warning">Manually Running Task! <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
-
-      $DM.task.run(tsk(), function(e) {
-        if (!e.err) {
-          $('#task-result').html('<p class="bg-success">Task Manual Run Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
-          $('#taskWizard [am-Button~=finish]').prop('disabled', false);
-        } else {
-          $('#task-result').html('<p class="bg-danger">Task Manual Run Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
-          $('#taskWizard [am-Button~=finish]').prop('disabled', true);
-        }
-      });
-
-
-    });
-
-    /**
-     * Hook to the Dialog finish button
-     */
-    $('#taskWizard [am-Button~=finish]').click(function() {
-      $('#taskWizard').modal('hide');
-      $DM.task.save(tsk());
-    });
-
-
-
-    /**************** UI Bindings ***************/
-    /****************  Complete Init  ***************/
-
     /**
      * Finish init by navigating to a page
      */
@@ -15924,20 +15350,7 @@ var Admin = (function($this, $) {
         self.Controllers.Loader.ModalSetup(data);
       break;
       case "taskWizard":
-        $('#taskWizard').attr('data-id', data._id);
-        $('#taskWizard').attr('data-rev', data._rev);
-
-        if (data.status == 'disabled') {
-          $('#taskWizard .modal-header [am-Button~=switch].status').attr('data-state-value', 'disabled').attr('data-state', 'off').text('Disabled');
-        }
-
-        $('#taskName').val(data.name);
-        $('#taskDescription').val(data.description);
-        $('#taskRepeat').val(data.repeat);
-        $('#taskRundate').val(data.runDate);
-        $('#taskRuntime').val(data.runTime);
-        $('#task-extractor-select').val(data.extractor).change();
-
+        self.Controllers.Task.ModalSetup(data);
       break;
     }
   }
@@ -16510,12 +15923,12 @@ var Admin = (function($this, $) {
 
   var $DM;
   var Extractor = function() {
-    $admin.UI.Controllers.Extractor = $this = this;
+    var $this = $admin.UI.Controllers.Extractor = this;
     console.log('Admin.Controllers.Extractor constructor');
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
-      this.Bindings();
+      $this.Bindings();
       console.log('Admin.Controllers.Extractor initialized');
     };
 
@@ -16823,13 +16236,181 @@ var Admin = (function($this, $) {
 
   var $DM;
   var Loader = function() {
-    $admin.UI.Controllers.Loader = $this = this;
+    var $this = $admin.UI.Controllers.Loader = this;
     console.log('Admin.Controllers.Loader constructor');
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
+      $this.Bindings();
       console.log('Admin.Controllers.Loader initialized');
     };
+  };
+
+  Loader.prototype.Bindings = function() {
+    /**
+     * Setup dialog button to be next vs save
+     */
+    $('#loaderWizard [am-Button~=finish]').hide();
+
+    /**
+     * When choosing a transformer to feed the loader
+     */
+    $('#ldr-source-toggle').change(function() {
+      if ($(this).val() !== 'custom') $('#ldr-source-select').removeAttr('disabled');
+      else $('#ldr-source-select').attr('disabled', 'disabled');
+    });
+
+    var trnSample = {};
+
+    /**
+     * When choosing a transformer to feed the loader
+     */
+    $('#ldr-source-select').change(function() {
+      var v = $(this).val();
+      var s = $DM.getTransformers().filter(function(e) {
+        if (e.id == v) return e;
+        else return null;
+      }).pop();
+
+      $DM.transformer.sample(s.value, function(e) {
+        if (!e.err) {
+          Admin.View.loaderDefinition()(e.body);
+          // update('loaderDefinition',e.body);
+          trnSample = e.body;
+        } 
+      });
+    });
+
+    $('#loaderMySQL').hide();
+    $('#loaderCouchDB').hide();
+    $('#loaderFTP').hide();
+    $('#loaderFilesystem').hide();
+    /**
+     * Bindings to validate the loader DSN, URI, whatever
+     */
+    $('#loaderDSN button').click(function() {
+      $DM.loader.validateConnection(ldr(), function(e) {
+        var t = $('#ldr-target-type').val();
+        var btn = $('#ldr-' + t + '-validate');
+        switch (t) {
+          case "mysql":
+          break;
+          case "couchdb":
+          break;
+          case "ftp":
+          break;
+          case "filesystem":
+          break;
+        }
+        $(btn).removeClass('btn-danger btn-success').addClass('btn-primary');
+        if (!e.err) {
+          $(btn).removeClass('btn-primary').addClass('btn-success');
+          $('.validation-status', btn).removeClass('asterisk').addClass('ok-sign');
+          $('#loaderWizard [am-Button~=next]').prop('disabled', false);
+        } else {
+          $(btn).prop('disabled', false).removeClass('btn-primary').addClass('btn-danger');
+          $('.validation-status', btn).removeClass('asterisk').addClass('exclamation-sign');
+        }
+
+      });
+    });
+
+    $('#ldr-target-type').change(function() {
+      switch ($(this).val())
+      {
+        case "mysql":
+          $('.loader-options').hide();
+          $('#loaderSchemas').show();
+
+          /**
+           * Bindings to the create schema button for MySQL loaders
+           */
+          $('#ldr-create-schema').click(function() {
+            $DM.loader.createSchema(ldr(), function(e) {
+              $('#ldr-create-schema').removeClass('btn-danger btn-success').addClass('btn-primary');
+              if (!e.err) {
+                $('#ldr-create-schema').removeClass('btn-primary').addClass('btn-success')
+                $('#ldr-create-schema .schema-status').removeClass('asterisk').addClass('ok-sign');
+              } else {
+                $('#ldr-create-schema').prop('disabled', false).removeClass('btn-primary').addClass('btn-danger')
+                $('#ldr-create-schema .schema-status').removeClass('asterisk').addClass('exclamation-sign');
+              }
+
+            });
+          });
+
+          $('#loaderSchemas .fields').hide();
+          $('#ldr-new-schema').click(function() {
+            $('#loaderSchemas .create').hide();
+            $('#loaderSchemas .fields').show();
+          });
+          $('#loaderMySQL').show();
+          $('#loaderCouchDB').hide();
+          $('#loaderFTP').hide();
+          $('#loaderFilesystem').hide();
+        break;
+        case "couchdb":
+          $('.loader-options').hide();
+          $('#ldr-couchdb-options').show();
+          
+          $('#loaderMySQL').hide();
+          $('#loaderCouchDB').show();
+          $('#loaderFTP').hide();
+          $('#loaderFilesystem').hide();
+        break;
+        case "ftp":
+          $('.loader-options').hide();
+          $('#ldr-ftp-options').show();
+
+          $('#loaderMySQL').hide();
+          $('#loaderCouchDB').hide();
+          $('#loaderFTP').show();
+          $('#loaderFilesystem').hide();
+        break;
+        case "filesystem":
+          $('.loader-options').hide();
+          $('#ldr-filesystem-options').show();
+
+          $('#loaderMySQL').hide();
+          $('#loaderCouchDB').hide();
+          $('#loaderFTP').hide();
+          $('#loaderFilesystem').show();
+        break;
+      }
+    });
+
+    /**
+     * Binding for running loader tests
+     */
+    $('#ldr-test').click(function() {
+      $('#loader-result').html('');
+      $DM.loader.sample(ldr(), function(e) {
+        if (!e.err) {
+          $('#loader-result').html('<p class="bg-success">Loader Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
+          $('#loaderWizard [am-Button~=finish]').prop('disabled', false);
+        } else {
+          $('#loader-result').html('<p class="bg-danger">Loader Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
+          $('#loaderWizard [am-Button~=finish]').prop('disabled', true);
+        }
+      });
+    });
+
+    /**
+     * Clear the loader test log
+     */
+    $('#ldr-test-clear').click(function() {
+      $('#loader-log-body').html('');
+      $('#loader-result').html('');
+    });
+
+    /**
+     * Hook to the Dialog finish button
+     */
+    $('#loaderWizard [am-Button~=finish]').click(function() {
+      $('#loaderWizard').modal('hide');
+      $DM.loader.validate(ldr());
+      $DM.loader.save(ldr());
+    });
   };
 
   Loader.prototype.ModalReset = function() {
@@ -16927,13 +16508,17 @@ var Admin = (function($this, $) {
 
   var $DM;
   var Solution = function() {
-    $admin.UI.Controllers.Solution = $this = this;
+    var $this = $admin.UI.Controllers.Solution = this;
     console.log('Admin.Controllers.Solution constructor');
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
+      $this.Bindings();
       console.log('Admin.Controllers.Solution initialized');
     };
+  };
+
+  Solution.prototype.Bindings = function() {
   };
 
   Solution.prototype.ModalReset = function() {
@@ -16955,12 +16540,37 @@ var Admin = (function($this, $) {
 +(function($admin, $) {
 
   var Source = function() {
-    $admin.UI.Controllers.Source = $this = this;
+    var $this = $admin.UI.Controllers.Source = this;
     console.log('Admin.Controllers.Source constructor');
 
     this._init = function() {
+      $this.Bindings();
       console.log('Admin.Controllers.Source initialized');
     };
+  };
+
+  Source.prototype.Bindings = function() {
+    $('#validateBtn').click(function() {
+      Admin.Validator.source.validate();
+    });
+
+    $('#sourceEditor [am-Button~=prev]').hide();
+    $('#sourceEditor [am-Button~=next]').hide();
+    $('#sourceEditor [am-Button~=finish]').click(function() {
+      Admin.Validator.source.save();
+    });
+
+    /**
+     * From the source Wizard; display source options based on selected source type
+     */
+    $('#sourcetype').change(function() {
+      $admin.UI.Controllers.Source.ModalReset();
+      if ($(this).val() == 'RETS') $('#source_RETS').show();
+      else if ($(this).val() == 'FTP') $('#source_FTP').show();
+      else if ($(this).val() == 'SOAP') $('#source_SOAP').show();
+      else if ($(this).val() == 'REST') $('#source_REST').show();
+      else if ($(this).val() == 'XML') $('#source_XML').show();
+    }).change();
   };
 
   Source.prototype.ModalReset = function() {
@@ -17024,13 +16634,138 @@ var Admin = (function($this, $) {
 
   var $DM;
   var Task = function() {
-    $admin.UI.Controllers.Task = $this = this;
+    var $this = $admin.UI.Controllers.Task = this;
     console.log('Admin.Controllers.Task constructor');
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
+      $this.Bindings();
       console.log('Admin.Controllers.Task initialized');
     };
+  };
+
+  Task.prototype.Bindings = function() {
+    $('#taskRepeat').change(function() {
+      var _repeat = $(this).val();
+      switch (_repeat)
+      {
+        case 'daily':
+          $('#taskRepeatOptions').hide();
+        break;
+        case 'weekly':
+          $('.repeatOptions').hide();
+          $('#taskRepeatWeeklyOptions').show();
+          $('#taskRepeatOptions').show();
+        break;
+        case 'monthly':
+          $('.repeatOptions').hide();
+          $('#taskRepeatMonthlyOptions').show();
+          $('#taskRepeatOptions').show();
+        break;
+        case 'periodically':
+          $('.repeatOptions').hide();
+          $('#taskRepeatPeriodicOptions').show();
+          $('#taskRepeatOptions').show();
+        break;
+        default:
+          $('#taskRepeatOptions').hide();
+      }
+    });
+
+    $('#taskRepeatOptions').hide();
+
+    $('#task-extractor-select').change(function() {
+
+      var _ext = $(this).val();
+      if (!_ext) return;
+
+      var extractor = $DM.getExtractor(_ext);
+      var source = $DM.getSource(extractor.value.source);
+
+      var transformers = $DM.getTransformers();
+      var loaders = $DM.getLoaders();
+
+      var _trn = [];
+      var _ldr = [];
+
+      $('#taskETLMap > ul').html('');
+      $('#taskTransformers').html('');
+      $('#taskLoaders').html('');
+
+      $("#taskETLMap .sources").append('<li class="source"><div class="title">' + source.key + '</div></li>');
+      $("#taskETLMap .extractors").append('<li class="extractor"><div class="title">' + extractor.key + '</div></li>');
+
+      $(transformers).each(function(index, item) {
+        if (item.value.extractor == _ext) {
+          $('#taskTransformers').append('<li>' + item.key + '</li>');
+          $("#taskETLMap .transformers").append('<li class="transformer" data-id="' + item.id + '"><div class="title">' + item.key + '</div></li>');
+          _trn.push(item.id);
+        }
+      });
+
+      $(loaders).each(function(index, item) {
+        if (_trn.indexOf(item.value.transform) > -1) {
+          $('#taskLoaders').append('<li>' + item.key + '</li>');
+          $("#taskETLMap [data-id=" + item.value.transform + "]").append('<li class="loader" data-rel="' + item.value.transform + '" data-id="' + item.id + '"><div class="title">' + item.key + '</div></li>');
+          _ldr.push(item.id);
+        }
+      });
+
+    });
+
+    /**
+     * Binding for running task tests
+     */
+    $('#task-test').click(function() {
+      $('#task-result').html('');
+      $DM.task.sample(tsk(), function(e) {
+        if (!e.err) {
+          $('#task-result').html('<p class="bg-success">Task Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
+          $('#taskWizard [am-Button~=finish]').prop('disabled', false);
+        } else {
+          $('#task-result').html('<p class="bg-danger">Task Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
+          $('#taskWizard [am-Button~=finish]').prop('disabled', true);
+        }
+      });
+    });
+
+    /**
+     * Clear the loader test log
+     */
+    $('#task-test-clear').click(function() {
+      $('#task-log-body').html('');
+      $('#task-result').html('');
+    });
+
+    /**
+     * Binding to manually run the task
+     */
+    $('#task-run').click(function() {
+      $('#task-log-body').html('');
+      $('#task-result').html('');
+
+      $('#task-log-body').html('<p class="text-warning">Manually Running Task! <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
+
+      $DM.task.run(tsk(), function(e) {
+        if (!e.err) {
+          $('#task-result').html('<p class="bg-success">Task Manual Run Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
+          $('#taskWizard [am-Button~=finish]').prop('disabled', false);
+        } else {
+          $('#task-result').html('<p class="bg-danger">Task Manual Run Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
+          $('#taskWizard [am-Button~=finish]').prop('disabled', true);
+        }
+      });
+
+
+    });
+
+    /**
+     * Hook to the Dialog finish button
+     */
+    $('#taskWizard [am-Button~=finish]').click(function() {
+      $('#taskWizard').modal('hide');
+      $DM.task.save(tsk());
+    });
   };
 
   Task.prototype.ModalReset = function() {
@@ -17066,13 +16801,99 @@ var Admin = (function($this, $) {
 
   var $DM;
   var Transform = function() {
-    $admin.UI.Controllers.Transform = $this = this;
+    var $this = $admin.UI.Controllers.Transform = this;
     console.log('Admin.Controllers.Transform constructor');
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
+      $this.Bindings();
       console.log('Admin.Controllers.Transform initialized');
     };
+  };
+
+  Transform.prototype.Bindings = function() {
+    /**
+     * Setup dialog button to be next vs save
+     */
+    $('#transformWizard [am-Button~=finish]').hide();
+
+    /**
+     * Input type selection for the transformer
+     * This should pretty much just be "bind to extractor" now
+     */
+    $('#trn-source-toggle').change(function() {
+      if ($(this).val() !== 'custom') $('#trn-source-select').prop('disabled', false);
+      else $('#trn-source-select').attr('disabled', 'disabled');
+    });
+
+    /**
+     * When a user selects an extractor to feed into the transformer let's load
+     * some metadata
+     */
+    $('#trn-source-select').change(function() {
+      var v = $(this).val();
+      var s = $DM.getExtractors().filter(function(e) {
+        if (e.id == v) return e;
+        else return null;
+      }).pop();
+      if (!s) return;
+      $DM.extractor.sample(s.value, function(e) {
+        if (!e.err) {
+          Admin.View.transformDataStructures()(e.body);
+          $('#transformWizard [am-Button~=next]').prop('disabled', false);
+        }
+      });
+    });
+
+    $('#transformNormalize').hide();
+    $('#transformMapper').hide();
+
+    /**
+     * When you choose a transformation type
+     */
+    $('#trn-transform-type').change(function() {
+      if ($(this).val() == 'normalize') {
+        $('#transformNormalize').show();
+        $('#transformMapper').hide();
+      }
+      if ($(this).val() == 'map') {
+        $('#transformNormalize').hide();
+        $('#transformMapper').show();
+      }
+    });
+
+    /**
+     * Bind to the transformer test button
+     */
+    $('#trn-test').click(function() {
+      $('#transformer-result').html('');
+      $DM.transformer.sample(trn(), function(e) {
+        if (!e.err) {
+          $('#transformer-result').html('<p class="bg-success">Transform Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
+          $('#transformWizard [am-Button~=finish]').prop('disabled', false);
+        } else {
+          $('#transformer-result').html('<p class="bg-danger">Transform Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
+          $('#transformWizard [am-Button~=finish]').prop('disabled', true);
+        }
+      });
+    });
+
+    /**
+     * Reset tranform test log
+     */
+    $('#trn-test-clear').click(function() {
+      $('#transformer-log-body').html('');
+      $('#transformer-result').html('');
+    });
+
+    /**
+     * Hook to the Dialog finish button
+     */
+    $('#transformWizard [am-Button~=finish]').click(function() {
+      $('#transformWizard').modal('hide');
+      $DM.transformer.validate(trn());
+      $DM.transformer.save(trn(), function() { $DM.loadTransformers(); });
+    });
   };
 
   Transform.prototype.ModalReset = function() {

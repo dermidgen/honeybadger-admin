@@ -2,13 +2,99 @@
 
   var $DM;
   var Transform = function() {
-    $admin.UI.Controllers.Transform = $this = this;
+    var $this = $admin.UI.Controllers.Transform = this;
     console.log('Admin.Controllers.Transform constructor');
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
+      $this.Bindings();
       console.log('Admin.Controllers.Transform initialized');
     };
+  };
+
+  Transform.prototype.Bindings = function() {
+    /**
+     * Setup dialog button to be next vs save
+     */
+    $('#transformWizard [am-Button~=finish]').hide();
+
+    /**
+     * Input type selection for the transformer
+     * This should pretty much just be "bind to extractor" now
+     */
+    $('#trn-source-toggle').change(function() {
+      if ($(this).val() !== 'custom') $('#trn-source-select').prop('disabled', false);
+      else $('#trn-source-select').attr('disabled', 'disabled');
+    });
+
+    /**
+     * When a user selects an extractor to feed into the transformer let's load
+     * some metadata
+     */
+    $('#trn-source-select').change(function() {
+      var v = $(this).val();
+      var s = $DM.getExtractors().filter(function(e) {
+        if (e.id == v) return e;
+        else return null;
+      }).pop();
+      if (!s) return;
+      $DM.extractor.sample(s.value, function(e) {
+        if (!e.err) {
+          Admin.View.transformDataStructures()(e.body);
+          $('#transformWizard [am-Button~=next]').prop('disabled', false);
+        }
+      });
+    });
+
+    $('#transformNormalize').hide();
+    $('#transformMapper').hide();
+
+    /**
+     * When you choose a transformation type
+     */
+    $('#trn-transform-type').change(function() {
+      if ($(this).val() == 'normalize') {
+        $('#transformNormalize').show();
+        $('#transformMapper').hide();
+      }
+      if ($(this).val() == 'map') {
+        $('#transformNormalize').hide();
+        $('#transformMapper').show();
+      }
+    });
+
+    /**
+     * Bind to the transformer test button
+     */
+    $('#trn-test').click(function() {
+      $('#transformer-result').html('');
+      $DM.transformer.sample(trn(), function(e) {
+        if (!e.err) {
+          $('#transformer-result').html('<p class="bg-success">Transform Test Completed Successfully <span am-Icon="glyph" class="glyphicon ok-circle"></span></p>');
+          $('#transformWizard [am-Button~=finish]').prop('disabled', false);
+        } else {
+          $('#transformer-result').html('<p class="bg-danger">Transform Test Failed! Check your settings and try again. <span am-Icon="glyph" class="glyphicon warning-sign"></span></p>');
+          $('#transformWizard [am-Button~=finish]').prop('disabled', true);
+        }
+      });
+    });
+
+    /**
+     * Reset tranform test log
+     */
+    $('#trn-test-clear').click(function() {
+      $('#transformer-log-body').html('');
+      $('#transformer-result').html('');
+    });
+
+    /**
+     * Hook to the Dialog finish button
+     */
+    $('#transformWizard [am-Button~=finish]').click(function() {
+      $('#transformWizard').modal('hide');
+      $DM.transformer.validate(trn());
+      $DM.transformer.save(trn(), function() { $DM.loadTransformers(); });
+    });
   };
 
   Transform.prototype.ModalReset = function() {

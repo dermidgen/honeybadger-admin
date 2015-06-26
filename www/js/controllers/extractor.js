@@ -2,12 +2,12 @@
 
   var $DM;
   var Extractor = function() {
-    $admin.UI.Controllers.Extractor = $this = this;
+    var $this = $admin.UI.Controllers.Extractor = this;
     console.log('Admin.Controllers.Extractor constructor');
 
     this._init = function() {
       $DM = $admin._parent.DataManager;
-      this.Bindings();
+      $this.Bindings();
       console.log('Admin.Controllers.Extractor initialized');
     };
 

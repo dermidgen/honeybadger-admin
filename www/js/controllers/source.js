@@ -1,12 +1,37 @@
 +(function($admin, $) {
 
   var Source = function() {
-    $admin.UI.Controllers.Source = $this = this;
+    var $this = $admin.UI.Controllers.Source = this;
     console.log('Admin.Controllers.Source constructor');
 
     this._init = function() {
+      $this.Bindings();
       console.log('Admin.Controllers.Source initialized');
     };
+  };
+
+  Source.prototype.Bindings = function() {
+    $('#validateBtn').click(function() {
+      Admin.Validator.source.validate();
+    });
+
+    $('#sourceEditor [am-Button~=prev]').hide();
+    $('#sourceEditor [am-Button~=next]').hide();
+    $('#sourceEditor [am-Button~=finish]').click(function() {
+      Admin.Validator.source.save();
+    });
+
+    /**
+     * From the source Wizard; display source options based on selected source type
+     */
+    $('#sourcetype').change(function() {
+      $admin.UI.Controllers.Source.ModalReset();
+      if ($(this).val() == 'RETS') $('#source_RETS').show();
+      else if ($(this).val() == 'FTP') $('#source_FTP').show();
+      else if ($(this).val() == 'SOAP') $('#source_SOAP').show();
+      else if ($(this).val() == 'REST') $('#source_REST').show();
+      else if ($(this).val() == 'XML') $('#source_XML').show();
+    }).change();
   };
 
   Source.prototype.ModalReset = function() {
