@@ -69,6 +69,7 @@
       }
     });
   };
+
   this.source.save = function() {
 
     if (!$('#sourcename').val()) return false;
@@ -120,7 +121,7 @@
       $DM.loadSources();
     });
 
-    sourceModalReset();
+    $admin.UI.Controllers.Source.ModalReset();
     $('#sourceEditor').modal('hide');
   };
 

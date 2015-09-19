@@ -15601,6 +15601,7 @@ var Admin = (function($this, $) {
       }
     });
   };
+
   this.source.save = function() {
 
     if (!$('#sourcename').val()) return false;
@@ -15652,7 +15653,7 @@ var Admin = (function($this, $) {
       $DM.loadSources();
     });
 
-    sourceModalReset();
+    $admin.UI.Controllers.Source.ModalReset();
     $('#sourceEditor').modal('hide');
   };
 
