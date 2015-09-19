@@ -13,6 +13,63 @@
 
   };
 
+
+  /**
+   * Get an extractor definition from the UI
+   * @return {[type]}
+   */
+  var ext = function(){
+    var stype = $DM.getSource($('#ext-source-select').val()).value.source.type;
+
+    var extractor = {
+      name: $('#extractorName').val(),
+      source: $('#ext-source-select').val(),
+      target: {
+        type: (stype == 'RETS') ? $('#ext-rets-resource').val() : "file",
+        class: (stype == 'RETS') ? $('#ext-rets-class').val() : "",
+        res: (stype == 'RETS') ? $('#ext-rets-query').val() : $('#ftpFileName').val(),
+        format: (stype == 'RETS') ? 'DMQL2' : $('[name=ext-data-format]').val()
+      },
+      status: $('#transformWizard .modal-header [am-Button~=switch].status').attr('data-state-value')
+    };
+
+    var id = $('#extractorWizard').attr('data-id');
+    var _rev = $('#extractorWizard').attr('data-rev');
+    if (id && _rev) {
+      extractor._id = id;
+      extractor._rev = _rev;
+    }
+
+    switch(stype){
+      case "FTP":
+        if (extractor.target.format === 'delimited-text') {
+          extractor.target.options = {
+            unarchive: $('[name=ext-unarchive]:checked').val(),
+            delimiter: $('[name=ext-csv-delimiter]:checked').val(),
+            escape: $('[name=ext-csv-escape]:checked').val()
+          };
+        }
+      break;
+      case "RETS":
+        if ($('#ext-rets-media').prop('checked')) {
+          extractor.target.options = {
+            mediaExtract: true,
+            mediaExtractStrategy: $('#ext-rets-media-strategy').val(),
+            mediaExtractKey: $('#ext-rets-media-extractKey').val(),
+            mediaExtractTarget: $('#ext-rets-media-target').val()
+          };
+          if(extractor.target.options.mediaExtractStrategy == 'MediaGetURL'){
+            extractor.target.options.mediaExtractQuery = $('#ext-rets-media-query').val();
+            extractor.target.options.mediaQueryExtractKey = $('#ext-rets-media-query-extractKey').val();
+          }
+        }
+      break;
+    }
+
+    return extractor;
+  };
+
+
   Extractor.prototype.Bindings = function() {
     /**
      * Setup dialog button to be next vs save
