@@ -15923,18 +15923,6 @@ var Admin = (function($this, $) {
 +(function($admin, $) {
 
   var $DM;
-  var Extractor = function() {
-    var $this = $admin.UI.Controllers.Extractor = this;
-    console.log('Admin.Controllers.Extractor constructor');
-
-    this._init = function() {
-      $DM = $admin._parent.DataManager;
-      $this.Bindings();
-      console.log('Admin.Controllers.Extractor initialized');
-    };
-
-  };
-
 
   /**
    * Get an extractor definition from the UI
@@ -15991,6 +15979,18 @@ var Admin = (function($this, $) {
     return extractor;
   };
 
+
+  var Extractor = function() {
+    var $this = $admin.UI.Controllers.Extractor = this;
+    console.log('Admin.Controllers.Extractor constructor');
+
+    this._init = function() {
+      $DM = $admin._parent.DataManager;
+      $this.Bindings();
+      console.log('Admin.Controllers.Extractor initialized');
+    };
+
+  };
 
   Extractor.prototype.Bindings = function() {
     /**
@@ -16049,17 +16049,18 @@ var Admin = (function($this, $) {
         $('#ext-step-2 > .ext-rets-options').show();
 
         s.value.source.rets = { resource: $('#ext-rets-resource').val() };
-        console.log(s);
-        // $DM.retsExplore(s.value, function(e) {
-        //   if (e.body.meta) {
-        //     $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
-        //     $.each(e.body.meta.data, function(index, item) {
-        //       // console.log(item);
-        //       $('#ext-rets-resource').append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
-        //       $('#ext-rets-options .rets-resource').removeClass('hide').show();
-        //     });
-        //   }
-        // });
+        // console.log(s);
+        $DM.retsExplore(s.value, function(e) {
+          console.dir(e.body.meta.RETS.METADATA);
+          if (e.body.meta) {
+            $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
+            $.each(e.body.meta.RETS.METADATA[0]['METADATA-RESOURCE'], function(index, item) {
+              console.log(item.Resource[0]);
+              $('#ext-rets-resource').append('<option value="' + item.Resource[0].ResourceID[0] + '">' + item.Resource[0].VisibleName[0] + '</option>');
+              $('#ext-rets-options .rets-resource').removeClass('hide').show();
+            });
+          }
+        });
       }
     });
 
@@ -16071,6 +16072,7 @@ var Admin = (function($this, $) {
       s.source.rets = { resource: $('#ext-rets-resource').val() };
       console.log(s);
       $DM.retsBrowse(s, function(e) {
+        console.dir(e);
         if (e.body.meta) {
           $('#ext-rets-class').html('<option>-- Select a data class --</option>')
           $.each(e.body.meta.METADATA[0]['METADATA-CLASS'][0].Class, function(index, item) {
@@ -16092,6 +16094,7 @@ var Admin = (function($this, $) {
       };
       $DM.retsInspect(s, function(e) {
         $('#ext-step-2 > .ext-rets-options .fields').html('');
+        console.dir(e);
         $.each(e.body.meta.data, function(index, item) {
           // console.log(item);
           $('#ext-step-2 > .ext-rets-options .fields').append('<div class="item"><strong>' + item.LongName[0] + '</strong> <em>' + index + '</em> <small>' + item.StandardName[0] + '</small> ' + ((item.Searchable[0] == '1') ? '<span class="badge">Searchable</span>' : '') + '<div class="detail"><small><em>' + item.DataType[0] + '</em> </small></div></div>');
