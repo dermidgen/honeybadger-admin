@@ -128,13 +128,18 @@
 
         s.value.source.rets = { resource: $('#ext-rets-resource').val() };
         // console.log(s);
+        // 
+        
+        /**
+         * Populate the Resources Selection Dropdown for RETS extractors
+         */
         $DM.retsExplore(s.value, function(e) {
-          console.dir(e.body.meta.RETS.METADATA);
+          console.dir(e);
           if (e.body.meta) {
             $('#ext-rets-resource').html('<option>-- Select a data resource --</option>');
-            $.each(e.body.meta.RETS.METADATA[0]['METADATA-RESOURCE'], function(index, item) {
-              console.log(item.Resource[0]);
-              $('#ext-rets-resource').append('<option value="' + item.Resource[0].ResourceID[0] + '">' + item.Resource[0].VisibleName[0] + '</option>');
+            $.each(e.body.meta.RETS.METADATA[0]['METADATA-RESOURCE'][0].Resource, function(index, item) {
+              console.log(item);
+              $('#ext-rets-resource').append('<option value="' + item.ResourceID[0] + '">' + item.VisibleName[0] + '</option>');
               $('#ext-rets-options .rets-resource').removeClass('hide').show();
             });
           }
@@ -153,7 +158,7 @@
         console.dir(e);
         if (e.body.meta) {
           $('#ext-rets-class').html('<option>-- Select a data class --</option>')
-          $.each(e.body.meta.METADATA[0]['METADATA-CLASS'][0].Class, function(index, item) {
+          $.each(e.body.meta.RETS.METADATA[0]['METADATA-CLASS'][0].Class, function(index, item) {
             $('#ext-rets-class').append('<option value="' + item.ClassName[0] + '">' + item.VisibleName[0] + ((item.StandardName[0]) ? ' : ' + item.StandardName[0] : '') + '</option>');
             $('#ext-rets-options .rets-classification').removeClass('hide').show();
           });
