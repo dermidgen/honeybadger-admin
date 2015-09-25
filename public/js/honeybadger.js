@@ -441,6 +441,11 @@ var HoneyBadger = (function($this) {
     $this.exec('rets.getMetadataTable', [source], callback);
   };
 
+  this.retsLookup = function(source, field, callback)  {
+    // $this.exec('rets.getMetadataResources',[source],callback);
+    $this.exec('rets.getMetadataLookup', [source, field], callback);
+  };
+
 }(HoneyBadger || {}));
 
 +(function($this) {
