@@ -1,5 +1,29 @@
 +(function($admin, $) {
 
+  /**
+   * Get a task definition from the UI
+   * @return {[type]}
+   */
+  var tsk = function() {
+    var id = $('#taskWizard').attr('data-id');
+    var _rev = $('#taskWizard').attr('data-rev');
+    var res = {
+      name: $('#taskName').val(),
+      description: $('#taskDescription').val(),
+      runDate: $('#taskRundate').val(),
+      runTime: $('#taskRuntime').val(),
+      repeat: $('#taskRepeat').val(),
+      extractor: $('#task-extractor-select').val(),
+      status: $('#taskWizard .modal-header [am-Button~=switch].status').attr('data-state-value')
+    };
+
+    if (id && _rev) {
+      res._id = id;
+      res._rev = _rev;
+    }
+    return res;
+  };
+
   var $DM;
   var Task = function() {
     var $this = $admin.UI.Controllers.Task = this;

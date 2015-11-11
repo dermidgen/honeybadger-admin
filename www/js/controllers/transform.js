@@ -1,5 +1,41 @@
 +(function($admin, $) {
 
+  /**
+   * Get an transformer definition from the UI
+   * @return {[type]}
+   */
+  var trn = function() {
+    var transform = {
+      name: $('#transformerName').val(),
+      description: $('#transformerDescription').val(),
+      style: $('#trn-source-toggle').val(),
+      extractor: $('#trn-source-select').val(),
+      transform: {
+        input: [],
+        normalize: [],
+        map: $('#trn-map').val()
+      },
+      status: $('#transformWizard .modal-header [am-Button~=switch].status').attr('data-state-value')
+    };
+
+    var id = $('#transformWizard').attr('data-id');
+    var _rev = $('#transformWizard').attr('data-rev');
+    if (id && _rev) {
+      transform._id = id;
+      transform._rev = _rev;
+    }
+
+    $('#transformNormalize .item input:text:enabled').each(function(index, item) {
+      transform.transform.input.push($('.name', $(item).parent().parent()).text());
+      transform.transform.normalize.push({
+        in: $('.name', $(item).parent().parent()).text(),
+        out: $(item).val()
+      });
+    });
+
+    return transform;
+  };
+
   var $DM;
   var Transform = function() {
     var $this = $admin.UI.Controllers.Transform = this;

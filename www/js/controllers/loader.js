@@ -1,5 +1,60 @@
 +(function($admin, $) {
 
+  /**
+   * Get a loader definition from the UI
+   * @return {[type]}
+   */
+  var ldr = function() {
+    var res = {
+      name: $('#loaderName').val(),
+      transform: $('#ldr-source-select').val(),
+      target: {
+        type: $('#ldr-target-type').val()
+      },
+      status: $('#loaderWizard .modal-header [am-Button~=switch].status').attr('data-state-value')
+    };
+
+
+    var id = $('#loaderWizard').attr('data-id');
+    var _rev = $('#loaderWizard').attr('data-rev');
+    if (id && _rev) {
+      res._id = id;
+      res._rev = _rev;
+    }
+
+
+    switch (res.target.type) {
+      case "mysql":
+        res.target.dsn = $('#ldr-mysql-dsn').val();
+        res.target.schema = {
+          name: $('#ldr-target-schema').val(),
+          fields: []
+        };
+        $('#loaderSchemas .fields .maps label').each(function(index, item) {
+          res.target.schema.fields.push({
+            key: $(item).text(),
+            type: $(item).parent().parent().find('select').val()
+          });
+        });
+      break;
+      case "ftp":
+        res.target.dsn = $('#ldr-ftp-dsn').val();
+        res.target.basepath = $('#ldr-ftp-basepath').val();
+        res.target.filename = $('#ldr-ftp-filename').val();
+      break;
+      case "filesystem":
+        res.target.basepath = $('#ldr-filesystem-basepath').val();
+        res.target.filename = $('#ldr-filesystem-filename').val();
+        res.target.path = res.target.basepath + res.target.filename;
+      break;
+      case "couchdb":
+      break;
+    }
+
+    return res;
+  };
+
+
   var $DM;
   var Loader = function() {
     var $this = $admin.UI.Controllers.Loader = this;

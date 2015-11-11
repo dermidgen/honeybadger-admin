@@ -16307,6 +16307,61 @@ var Admin = (function($this, $) {
 
 +(function($admin, $) {
 
+  /**
+   * Get a loader definition from the UI
+   * @return {[type]}
+   */
+  var ldr = function() {
+    var res = {
+      name: $('#loaderName').val(),
+      transform: $('#ldr-source-select').val(),
+      target: {
+        type: $('#ldr-target-type').val()
+      },
+      status: $('#loaderWizard .modal-header [am-Button~=switch].status').attr('data-state-value')
+    };
+
+
+    var id = $('#loaderWizard').attr('data-id');
+    var _rev = $('#loaderWizard').attr('data-rev');
+    if (id && _rev) {
+      res._id = id;
+      res._rev = _rev;
+    }
+
+
+    switch (res.target.type) {
+      case "mysql":
+        res.target.dsn = $('#ldr-mysql-dsn').val();
+        res.target.schema = {
+          name: $('#ldr-target-schema').val(),
+          fields: []
+        };
+        $('#loaderSchemas .fields .maps label').each(function(index, item) {
+          res.target.schema.fields.push({
+            key: $(item).text(),
+            type: $(item).parent().parent().find('select').val()
+          });
+        });
+      break;
+      case "ftp":
+        res.target.dsn = $('#ldr-ftp-dsn').val();
+        res.target.basepath = $('#ldr-ftp-basepath').val();
+        res.target.filename = $('#ldr-ftp-filename').val();
+      break;
+      case "filesystem":
+        res.target.basepath = $('#ldr-filesystem-basepath').val();
+        res.target.filename = $('#ldr-filesystem-filename').val();
+        res.target.path = res.target.basepath + res.target.filename;
+      break;
+      case "couchdb":
+      break;
+    }
+
+    return res;
+  };
+
+
   var $DM;
   var Loader = function() {
     var $this = $admin.UI.Controllers.Loader = this;
@@ -16705,6 +16760,30 @@ var Admin = (function($this, $) {
 
 +(function($admin, $) {
 
+  /**
+   * Get a task definition from the UI
+   * @return {[type]}
+   */
+  var tsk = function() {
+    var id = $('#taskWizard').attr('data-id');
+    var _rev = $('#taskWizard').attr('data-rev');
+    var res = {
+      name: $('#taskName').val(),
+      description: $('#taskDescription').val(),
+      runDate: $('#taskRundate').val(),
+      runTime: $('#taskRuntime').val(),
+      repeat: $('#taskRepeat').val(),
+      extractor: $('#task-extractor-select').val(),
+      status: $('#taskWizard .modal-header [am-Button~=switch].status').attr('data-state-value')
+    };
+
+    if (id && _rev) {
+      res._id = id;
+      res._rev = _rev;
+    }
+    return res;
+  };
+
   var $DM;
   var Task = function() {
     var $this = $admin.UI.Controllers.Task = this;
@@ -16871,6 +16950,42 @@ var Admin = (function($this, $) {
 }(HoneyBadger.Admin, jQuery));
 
 +(function($admin, $) {
+
+  /**
+   * Get an transformer definition from the UI
+   * @return {[type]}
+   */
+  var trn = function() {
+    var transform = {
+      name: $('#transformerName').val(),
+      description: $('#transformerDescription').val(),
+      style: $('#trn-source-toggle').val(),
+      extractor: $('#trn-source-select').val(),
+      transform: {
+        input: [],
+        normalize: [],
+        map: $('#trn-map').val()
+      },
+      status: $('#transformWizard .modal-header [am-Button~=switch].status').attr('data-state-value')
+    };
+
+    var id = $('#transformWizard').attr('data-id');
+    var _rev = $('#transformWizard').attr('data-rev');
+    if (id && _rev) {
+      transform._id = id;
+      transform._rev = _rev;
+    }
+
+    $('#transformNormalize .item input:text:enabled').each(function(index, item) {
+      transform.transform.input.push($('.name', $(item).parent().parent()).text());
+      transform.transform.normalize.push({
+        in: $('.name', $(item).parent().parent()).text(),
+        out: $(item).val()
+      });
+    });
+
+    return transform;
+  };
 
   var $DM;
   var Transform = function() {
