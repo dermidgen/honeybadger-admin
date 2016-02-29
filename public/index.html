@@ -76,7 +76,7 @@
 <!-- Honey Badger Admin -->
 
 <header>
-	<h1 id="bodyTitle">Dashboard<small id="bodySubTitle"></small></h1>
+	<h1 id="bodyTitle">ETL Solutions Management<small id="bodySubTitle"></small></h1>
 </header>
 <article id="bodyContent">
 	<div id="dashboard" class="row">
@@ -597,9 +597,9 @@
 						<label class="control-label" for="trn-source-select">Transformer Input</label>
 						<select id="trn-source-toggle" class="form-control">
 							<option value="">-- Select an input definition --</option>
-							<option value="custom">Custom source definition</option>
-							<option value="extractor-template">Use extractor as a template</option>
 							<option value="extractor-bind">Bind to an extractor</option>
+							
+							
 						</select>
 						
 					</div>
@@ -612,12 +612,12 @@
 				<div class="col-md-6">
 					<small>
 						<dl>
-							<dt>Custom source definition</dt>
-							<dd>Define your own fields and data types</dd>
-							<dt>Use extractor as a template</dt>
-							<dd>Start with the fields an extractor has found a go from there</dd>
-							<dt>Bind to an extractor <em>*experimental*</em></dt>
+							<dt>Bind to an extractor</dt>
 							<dd>Always use the fields from this extractor - and adapt to changes</dd>
+							<dt>Custom source definition <em>*not implemented*</em></dt>
+							<dd>Define your own fields and data types</dd>
+							<dt>Use extractor as a template <em>*not implemented*</em></dt>
+							<dd>Start with the fields an extractor has found a go from there</dd>
 						</dl>
 					</small>
 				</div>
@@ -630,7 +630,7 @@
 				<select name="trn-transform-type" id="trn-transform-type" class="form-control">
 					<option value="">-- Select a transformation type --</option>
 					<option value="normalize">Normalize</option>
-					<option value="map">Custom Mapping</option>
+					
 				</select>
 			</div>
 			<div id="transformNormalize">
@@ -666,6 +666,7 @@
 	    </div>
 	  </div>
 	</div>
+
 
 	
 	<div am-Dialog class="modal fade" id="loaderWizard" tabindex="-1" role="dialog" aria-hidden="true">
