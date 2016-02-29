@@ -1,6 +1,16 @@
 html, body { height: 100%; }
 body { padding-top: 50px; }
 
+#wrap {min-height:100%;}
+#body {padding-bottom: 5em;}
+footer {
+	background-color: rgba(0,0,0,0.1);
+	position:relative;
+	height: 1.5em;
+	margin-top: -1.5em;
+	vertical-align: bottom;
+}
+
 /** something is up with blox and modal backdrop */
 .modal-backdrop {
 	display:none !important;
@@ -17,7 +27,7 @@ body { padding-top: 50px; }
 
 #connection {
 	border-left: 2px solid #eaeaea;
-	text-align: right;
+	text-align: left;
 }
 
 #connection.online {
@@ -28,13 +38,6 @@ body { padding-top: 50px; }
 	border-left: 2px solid red;
 }
 
-#wrap {min-height:100%;}
-#body {padding-bottom: 5em;}
-footer {
-	position:relative;
-	height: 5em;
-	margin-top: -5em;
-}
 
 .inline-fieldset {
 	display:inline-block;

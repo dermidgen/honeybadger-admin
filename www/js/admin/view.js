@@ -82,8 +82,8 @@
          */
         $('#ext-source-select').append('<option value="' + item.id + '">' + item.key + '</option>');
 
-        if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>' + item.key + '</td><td>' + item.value.source.type + '</td><td>' + (new Date(item.value.date)).toDateString() + '</td></tr>');
-        else $('#inactiveSources > tbody').append('<tr><td>' + item.key + '</td><td>' + item.value.source.type + '</td><td>' + (new Date(item.value.date)).toDateString() + '</td></tr>') ;
+        // if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>' + item.key + '</td><td>' + item.value.source.type + '</td><td>' + (new Date(item.value.date)).toDateString() + '</td></tr>');
+        // else $('#inactiveSources > tbody').append('<tr><td>' + item.key + '</td><td>' + item.value.source.type + '</td><td>' + (new Date(item.value.date)).toDateString() + '</td></tr>');
       });
 
       $('#ext-source-select').val(cval);
@@ -163,8 +163,8 @@
         var ext = $DM.getExtractor(item.value.extractor);
         $('#transformerList > tbody').append($('<tr><td>' + item.key + '</td><td>' + ext.key + '</td><td>' + item.value.transform.input.length + ' [ ' + item.value.transform.input.join(', ').substring(0, 100) + '... ]</td><td>' + item.value.status + '</td></tr>')
           .click(function() {
-  $admin.UI.showWizard('transformWizard');
-  $admin.UI.setupWizard('transformWizard', item.value);
+            $admin.UI.showWizard('transformWizard');
+            $admin.UI.setupWizard('transformWizard', item.value);
         }));
         $('#ldr-source-select').append('<option value="' + item.id + '">' + item.key + '</option>');
         // if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>');
@@ -206,6 +206,8 @@
   };
 
   this.tasks = function() {
+    $('#activeTasks').html('');
+    $('#inactiveTasks').html('');
 
     return function render(data) {
       $('#taskList > tbody').html('');
@@ -214,8 +216,8 @@
           $admin.UI.showWizard('taskWizard');
           $admin.UI.setupWizard('taskWizard', item.value);
         }));
-        // if (item.value.status === 'active') $('#activeSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>');
-        // else $('#inactiveSources > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>') ;
+        if (item.value.status === 'active') $('#activeTasks > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>');
+        else $('#inactiveTasks > tbody').append('<tr><td>'+item.key+'</td><td>'+item.value.type+'</td><td>'+(new Date(item.value.date)).toDateString()+'</td></tr>') ;
       });
     };
   };

@@ -175,19 +175,21 @@
         resource: $('#ext-rets-resource').val(),
         classification: $('#ext-rets-class').val()
       };
+      // Grab all the fields to show the user
       $DM.retsInspect(s, function(e) {
         $('#ext-step-2 > .ext-rets-options .fields').html('');
         console.dir(e);
         $.each(e.body.meta.RETS.METADATA[0]['METADATA-TABLE'][0].Field, function(index, item) {
           $('#ext-step-2 > .ext-rets-options .fields').append('<div class="item"><strong>' + item.LongName[0] + '</strong> <em>' + index + '</em> <small>' + item.StandardName[0] + '</small> ' + ((item.Searchable[0] == '1') ? '<span class="badge">Searchable</span>' : '') + '<div class="detail"><small><em>' + item.DataType[0] + '</em> </small></div></div>');
-          if (item.LookupName[0] === 'STATUS') {
-            $DM.retsLookup(s, item.LookupName[0], function(res) {
-              console.log(res);
-              $.each(res.body.meta.RETS.METADATA[0]['METADATA-LOOKUP_TYPE'][0].Lookup, function(i, it) {
-                $('#ext-step-2 > .ext-rets-options .fields').append('<span>' + it.LongValue[0] + ' : ' + it.Value[0] + '</span>');
-              });
-            });
-          }
+          // Check if the item is a lookup field and get it's possible values to show the user
+          // if (item.LookupName[0] === 'STATUS') {
+          //   $DM.retsLookup(s, item.LookupName[0], function(res) {
+          //     console.log(res);
+          //     $.each(res.body.meta.RETS.METADATA[0]['METADATA-LOOKUP_TYPE'][0].Lookup, function(i, it) {
+          //       $('#ext-step-2 > .ext-rets-options .fields').append('<span>' + it.LongValue[0] + ' : ' + it.Value[0] + '</span>');
+          //     });
+          //   });
+          // }
           // +item.ShortName[0]+' '+item.DBName[0]+' '
         });
         $('#extractorWizard [am-Button~=next]').prop("disabled", false);
