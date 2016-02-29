@@ -16120,6 +16120,11 @@ var Admin = (function($this, $) {
       });
     });
 
+    $('#ext-rets-media').change(function() {
+      if ($(this).prop('checked')) $('#rets-media-options').show();
+      else $('#rets-media-options').hide();
+    });
+
     $('#ext-rets-media-strategy').change(function() {
       if ($(this).val() == 'MediaGetURL') $('#rets-media-query-options').show();
       else $('#rets-media-query-options').hide();
