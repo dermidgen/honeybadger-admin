@@ -38,7 +38,7 @@
     "debug": "^2.2.0",
     "express": "^4.12.3",
     "ftp": "^0.3.10",
-    "grave": "0.0.1",
+    "grave": "git://github.com/substack/node-grave.git",
     "honeybadger-etl": "git://github.com/dermidgen/honeybadger-etl.git",
     "honeybadger-service": "git://github.com/dermidgen/honeybadger-service.git",
     "mysql": "^2.7.0",
