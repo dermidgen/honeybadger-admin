@@ -1,6 +1,6 @@
 {
   "name": "honeybadger-admin",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Admin interface for managing Honey Badger services and tasks",
   "main": "index.js",
   "scripts": {
